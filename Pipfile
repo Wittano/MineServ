@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[scripts]
+dev = "python manage.py runserver"
+django = "python manage.py"
+test = "python manage.py test"
+
+[packages]
+django = "*"
+djangorestframework = "*"
+django-cors-headers = "*"
+
+[dev-packages]
+pytest = "*"
+rope = "*"
+jedi = "*"
+isort = "*"
+
+[requires]
+python_version = "3.9"
