@@ -7,17 +7,24 @@ name = "pypi"
 dev = "python manage.py runserver"
 django = "python manage.py"
 test = "python manage.py test"
+format = "isort apps"
 
 [packages]
 django = "*"
 djangorestframework = "*"
 django-cors-headers = "*"
+requests = "*"
+beautifulsoup4 = "*"
+html-parser = "*"
 
 [dev-packages]
 pytest = "*"
 rope = "*"
 jedi = "*"
 isort = "*"
+autopep8 = "*"
+pylint = "*"
+flake8 = "*"
 
 [requires]
 python_version = "3.9"
