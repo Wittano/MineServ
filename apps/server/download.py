@@ -1,10 +1,12 @@
 import os
+import glob
 import re
 import threading
 
 import requests
 from bs4 import BeautifulSoup
 from bs4.element import ResultSet
+from apps.general.observer import Observer
 
 
 class ServerDownloader:
@@ -18,10 +20,21 @@ class ServerDownloader:
     __VERSIONS_WEBSITE = "https://www.minecraftversions.com/"
     __OFFICIAL = "https://www.minecraft.net/en-us/download/server"
 
+    @property
+    def observer(self):
+        return self.__observer
+
+    @observer.setter
+    def observer(self, observer: Observer):
+        self.__observer = observer
+
     class __SaveThread(threading.Thread):
-        def __init__(self, output: str, url: str):
+        def __init__(self, output: str, url: str, observer: Observer = None):
+            threading.Thread.__init__(self)
             self.__output = output
+            self.name = f"Downloading {output}"
             self.__url = url
+            self.__observer = observer
         
         def run(self):
             with requests.get(self.__url) as response:
@@ -30,8 +43,10 @@ class ServerDownloader:
                     "wb",
                 ) as f:
                     f.write(response.content)
+                    if self.__observer is not None:
+                        self.__observer.update()
 
-    def __init__(self, version: str):
+    def __init__(self, version: str, observer=None):
         self.__LATEST = self.check_latest()
 
         if self.__search(version) and self.__check_version(version):
@@ -53,6 +68,14 @@ class ServerDownloader:
         return re.search(self.__REGEX, version) is not None
 
     def __check_version(self, version: str) -> bool:
+        """Check if verion of minecraft server is available to download
+
+        Args:
+            version (str): Minecraft version
+
+        Returns:
+            bool: True when method found, otherwise False 
+        """
         versions = [
             x
             for x in map(
@@ -65,6 +88,16 @@ class ServerDownloader:
         return version in versions
 
     def __search_web(self, url: str, tag: str, attrs: dict) -> ResultSet:
+        """Search HTML elements at the given URL
+
+        Args:
+            url (str): Link to website
+            tag (str): HTML tag
+            attrs (dict): HTML attributes, which will be contained in HTML element
+
+        Returns:
+            ResultSet: List of HTML elements
+        """
         soup = BeautifulSoup(requests.get(url).content, "html.parser")
         return soup.find_all(tag, attrs=attrs)
 
@@ -83,10 +116,8 @@ class ServerDownloader:
     def download(self):
         output = f"{os.environ['DOWNLOAD_DIR']}/minecraft-server-{self.__version}.jar"
 
-        for _, _, files in os.walk(os.environ["DOWNLOAD_DIR"]):
-            for file in files:
-                if file.find(f"minecraft-server-{self.__version}.jar") != -1:
-                    return
+        if glob.glob(output) != []:
+            return
 
         if self.__version == self.__LATEST:
             url = self.__search_web(
@@ -103,5 +134,5 @@ class ServerDownloader:
                     url = u.div.find_all("a")[1]["href"]
                     break
 
-        save = self.__SaveThread(output, url)
-        save.run()
+        save = self.__SaveThread(output, url, self.__observer)
+        save.start()

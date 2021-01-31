@@ -1,11 +1,28 @@
 import os
-import re
 
 from django.test import TestCase
 
+from apps.general.observer import Observer
+
 from .download import ServerDownloader
 
-# Create your tests here.
+
+class DownloadObserver(Observer):
+    def __init__(self, version, mc):
+        self.__version = version
+        self.__mc = mc
+
+    def update(self):
+        with open(
+            "{}/minecraft-server-{}.jar".format(
+                os.environ["DOWNLOAD_DIR"],
+                self.__version
+                if self.__version.lower() != "latest"
+                else self.__mc.check_latest(),
+            ),
+            "r",
+        ) as f:
+            assert os.path.getsize(f.name) > 0
 
 
 class ServerTests(TestCase):
@@ -37,15 +54,7 @@ class ServerTests(TestCase):
         for version in versions:
             try:
                 mc = ServerDownloader(version)
+                mc.observer = DownloadObserver(version, mc)
                 mc.download()
-
-                with open(
-                    "{}/minecraft-server-{}.jar".format(
-                        os.environ["DOWNLOAD_DIR"],
-                        version if version.lower() != "latest" else mc.check_latest(),
-                    ),
-                    "r",
-                ) as f:
-                    assert os.path.getsize(f.name) > 0
             except ValueError:
                 assert version not in correct
