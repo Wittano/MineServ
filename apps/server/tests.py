@@ -3,7 +3,7 @@ import re
 
 from django.test import TestCase
 
-from .download import MinecraftDownloader, regex
+from .download import ServerDownloader
 
 # Create your tests here.
 
@@ -27,7 +27,6 @@ class ServerTests(TestCase):
 
         correct = [
             "1.9",
-            # "1.16.4",
             "latest",
             "LATEST",
             "LateST",
@@ -37,17 +36,16 @@ class ServerTests(TestCase):
 
         for version in versions:
             try:
-                mc = MinecraftDownloader(version)
+                mc = ServerDownloader(version)
                 mc.download()
 
                 with open(
                     "{}/minecraft-server-{}.jar".format(
                         os.environ["DOWNLOAD_DIR"],
-                        version if version.lower() != "latest" else mc._version,
+                        version if version.lower() != "latest" else mc.check_latest(),
                     ),
                     "r",
                 ) as f:
                     assert os.path.getsize(f.name) > 0
             except ValueError:
-                print(version)
                 assert version not in correct

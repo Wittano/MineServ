@@ -1,80 +1,107 @@
 import os
 import re
+import threading
 
 import requests
 from bs4 import BeautifulSoup
+from bs4.element import ResultSet
 
-regex = r"^([\d]{1})\.([\d]{1,2})\.?([\d]?)$"
 
+class ServerDownloader:
+    """Download minecrft server by given version
 
-class MinecraftDownloader:
+    Raises:
+        ValueError: If minecraft version isn't corrent or isn't available
+    """
+
+    __REGEX = r"^([\d]{1})\.([\d]{1,2})\.?([\d]?)$"
+    __VERSIONS_WEBSITE = "https://www.minecraftversions.com/"
+    __OFFICIAL = "https://www.minecraft.net/en-us/download/server"
+
+    class __SaveThread(threading.Thread):
+        def __init__(self, output: str, url: str):
+            self.__output = output
+            self.__url = url
+        
+        def run(self):
+            with requests.get(self.__url) as response:
+                with open(
+                    self.__output,
+                    "wb",
+                ) as f:
+                    f.write(response.content)
+
     def __init__(self, version: str):
-        self._latest = self._check_latest()
-        self._dir = os.environ["DOWNLOAD_DIR"]
+        self.__LATEST = self.check_latest()
 
-        if self._search(version) and self._check_version(version):
-            self._version = version
+        if self.__search(version) and self.__check_version(version):
+            self.__version = version
         elif version.lower() == "latest":
-            self._version = self._latest
+            self.__version = self.__LATEST
         else:
             raise ValueError("Wrong version format")
 
-    def download(self):
-        output = f"{self._dir}/minecraft-server-{self._version}.jar"
+    def __search(self, version: str) -> bool:
+        """Check if minecraft version has correct format
 
-        for _, _, files in os.walk(self._dir):
-            for file in files:
-                if file.find(f"minecraft-server-{self._version}.jar") != -1:
-                    return
+        Args:
+            version (str): minecraft version
 
-        soup = BeautifulSoup(
-            requests.get("https://www.minecraftversions.com/").content, "html.parser"
-        )
+        Returns:
+            bool: True when parameter version is correct with respect to special regex(__REGEX const), otherwise False
+        """
+        return re.search(self.__REGEX, version) is not None
 
-        url = ""
-
-        if self._version.lower() == self._latest:
-            official = BeautifulSoup(
-                requests.get("https://www.minecraft.net/en-us/download/server").content,
-                "html.parser",
-            )
-            url = official.find("a", attrs={"aria-label": "mincraft version"})["href"]
-        else:
-            for u in soup.select(".release"):
-                if u["id"] == self._version:
-                    url = u.div.find_all("a")[1]["href"]
-                    break
-
-        with requests.get(url) as response:
-            with open(
-                output,
-                "wb",
-            ) as f:
-                f.write(response.content)
-
-    def _search(self, version: str) -> bool:
-        return re.search(regex, version) is not None
-
-    def _check_version(self, version: str) -> bool:
-        soup = BeautifulSoup(
-            requests.get("https://www.minecraftversions.com/").content, "html.parser"
-        )
+    def __check_version(self, version: str) -> bool:
         versions = [
             x
-            for x in map(lambda x: x["id"], soup.select(".list-group-item,.release"))
-            if self._search(x)
+            for x in map(
+                lambda x: x["id"],
+                self.__search_web(self.__VERSIONS_WEBSITE, "li", None),
+            )
+            if self.__search(x)
         ]
 
         return version in versions
 
-    def _check_latest(self) -> str:
+    def __search_web(self, url: str, tag: str, attrs: dict) -> ResultSet:
+        soup = BeautifulSoup(requests.get(url).content, "html.parser")
+        return soup.find_all(tag, attrs=attrs)
+
+    def check_latest(self) -> str:
         """
         Check how is the latest minecraft server version
         """
-        soup = BeautifulSoup(
-            requests.get("https://www.minecraft.net/en-us/download/server").content,
-            "html.parser",
-        )
-        version = soup.find("a", {"aria-label": "mincraft version"}).text.split(".")
+        version = self.__search_web(
+            self.__OFFICIAL,
+            "a",
+            {"aria-label": "mincraft version"},
+        )[0].text.split(".")
 
         return f"{version[1]}.{version[2]}.{version[3]}"
+
+    def download(self):
+        output = f"{os.environ['DOWNLOAD_DIR']}/minecraft-server-{self.__version}.jar"
+
+        for _, _, files in os.walk(os.environ["DOWNLOAD_DIR"]):
+            for file in files:
+                if file.find(f"minecraft-server-{self.__version}.jar") != -1:
+                    return
+
+        if self.__version == self.__LATEST:
+            url = self.__search_web(
+                self.__OFFICIAL,
+                "a",
+                {"aria-label": "mincraft version"},
+            )[0]["href"]
+        else:
+            url = ""
+            for u in self.__search_web(
+                self.__VERSIONS_WEBSITE, "li", {"class": "release"}
+            ):
+                if u["id"] == self.__version:
+                    url = u.div.find_all("a")[1]["href"]
+                    break
+
+        save = self.__SaveThread(output, url)
+        save.run()
