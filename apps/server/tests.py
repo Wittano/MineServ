@@ -11,13 +11,8 @@ from .download import MinecraftDownloader, regex
 class ServerTests(TestCase):
     def test_download_sever(self):
         versions = [
-            "1.9",
             "1.62.1",
             ";a",
-            "1.16.4",
-            "latest",
-            "LATEST",
-            "LateST",
             "1.2.asdfasdfa",
             "asdfgd.2.3",
             "1.2.3",
@@ -29,6 +24,16 @@ class ServerTests(TestCase):
             "\n",
             "dirt",
         ]
+
+        correct = [
+            "1.9",
+            # "1.16.4",
+            "latest",
+            "LATEST",
+            "LateST",
+        ]
+
+        versions.extend(correct)
 
         for version in versions:
             try:
@@ -44,4 +49,5 @@ class ServerTests(TestCase):
                 ) as f:
                     assert os.path.getsize(f.name) > 0
             except ValueError:
-                assert True
+                print(version)
+                assert version not in correct

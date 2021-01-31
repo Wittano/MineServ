@@ -31,11 +31,19 @@ class MinecraftDownloader:
             requests.get("https://www.minecraftversions.com/").content, "html.parser"
         )
 
-        for u in soup.select(".release"):
-            if u["id"] == self._version:
-                url = u.div.find_all("a")[1]["href"]
+        url = ""
 
-        print(url)
+        if self._version.lower() == self._latest:
+            official = BeautifulSoup(
+                requests.get("https://www.minecraft.net/en-us/download/server").content,
+                "html.parser",
+            )
+            url = official.find("a", attrs={"aria-label": "mincraft version"})["href"]
+        else:
+            for u in soup.select(".release"):
+                if u["id"] == self._version:
+                    url = u.div.find_all("a")[1]["href"]
+                    break
 
         with requests.get(url) as response:
             with open(
