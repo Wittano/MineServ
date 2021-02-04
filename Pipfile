@@ -16,6 +16,9 @@ django-cors-headers = "*"
 requests = "*"
 beautifulsoup4 = "*"
 html-parser = "*"
+asyncio = "*"
+aiohttp = "*"
+aiofiles = "*"
 
 [dev-packages]
 pytest = "*"
@@ -25,6 +28,7 @@ isort = "*"
 autopep8 = "*"
 pylint = "*"
 flake8 = "*"
+mypy = "*"
 
 [requires]
 python_version = "3.9"
