@@ -1,4 +1,3 @@
-import asyncio
 import re
 
 from .search import search_web
@@ -20,7 +19,7 @@ async def check_latest() -> str:
     Returns:
         str: The latest stable version of minecraft
     """
-    version = await search_web(OFFICIAL, "a", {"aria-label": "mincraft version"})[
+    version = (await search_web(OFFICIAL, "a", {"aria-label": "mincraft version"}))[
         0
     ].text.split(".")
 
@@ -40,7 +39,7 @@ def search(version: str) -> bool:
 
 
 async def check_version(version: str) -> bool:
-    """Check if verion of minecraft server is available to download
+    """Check if version of minecraft server is available to download
 
     Args:
         version (str): Minecraft version

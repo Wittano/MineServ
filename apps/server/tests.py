@@ -1,45 +1,47 @@
 import os
 
-from django.test import TestCase
-from mineserv.property import DOWNLOAD_DIR
+import pytest
 
+from mineserv.property import DOWNLOAD_DIR
 from .utils.download import ServerDownloader
 
-class ServerTests(TestCase):
-    async def test_download_sever(self):
-        versions = [
-            "1.62.1",
-            ";a",
-            "1.2.asdfasdfa",
-            "asdfgd.2.3",
-            "1.asdf.2",
-            "3.5.6",
-            "1.17.1",
-            "7.6.6",
-            " ",
-            "\n",
-            "dirt",
-        ]
+versions = [
+    "1.62.1",
+    ";a",
+    "1.2.asdfasdfa",
+    "asdfgd.2.3",
+    "1.asdf.2",
+    "3.5.6",
+    "1.17.1",
+    "7.6.6",
+    " ",
+    "\n",
+    "dirt",
+]
 
-        correct = [
-            "1.9",
-            "1.2.4",
-            "latest",
-            "LATEST",
-            "LateST",
-        ]
+correct = [
+    "1.9",
+    "1.2.4",
+    "latest",
+    "LATEST",
+    "LateST",
+]
 
-        versions.extend(correct)
+versions.extend(correct)
 
-        for version in versions:
-            try:
-                mc = ServerDownloader(version)
-                await mc.download()
-                with open(
-                    "{}/minecraft-server-{}.jar".format(DOWNLOAD_DIR, version.lower()),
-                    "r",
-                    ) as f:
-                        assert os.path.getsize(f.name) > 0
 
-            except ValueError:
-                assert version not in correct
+@pytest.mark.parametrize('version', versions)
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_download_sever(version: str):
+    try:
+        mc = ServerDownloader(version)
+        await mc.download()
+        with open(
+                f"{DOWNLOAD_DIR}/minecraft-server-{version.lower()}.jar",
+                "r",
+        ) as f:
+            assert os.path.getsize(f.name) > 0
+
+    except ValueError:
+        assert version not in correct

@@ -1,5 +1,3 @@
-import asyncio
-
 import aiohttp
 from bs4 import BeautifulSoup
 from bs4.element import ResultSet
