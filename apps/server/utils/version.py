@@ -9,8 +9,8 @@ OFFICIAL = "https://www.minecraft.net/en-us/download/server"
 
 async def valid(version: str) -> bool:
     return (
-        search(version) and await check_version(version)
-    ) or version.lower() == "latest"
+                   search(version) and await check_version(version)
+           ) or version.lower() == "latest"
 
 
 async def check_latest() -> str:
@@ -45,15 +45,16 @@ async def check_version(version: str) -> bool:
         version (str): Minecraft version
 
     Returns:
-        bool: True when method found, otherwise False
+        bool: True when method found correct version, otherwise False
     """
     versions = [
         x
         for x in map(
             lambda x: x["id"],
-            await search_web(MINECRAFT_VERSIONS, "li", None),
+            await search_web(MINECRAFT_VERSIONS, "li"),
         )
         if search(x)
     ]
+    versions.extend([await check_latest()])
 
     return version in versions

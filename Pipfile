@@ -19,6 +19,7 @@ asyncio = "*"
 aiohttp = "*"
 aiofiles = "*"
 coverage = "*"
+jproperties = "*"
 
 [dev-packages]
 pytest = "*"

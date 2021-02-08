@@ -1,11 +1,22 @@
-import glob
+import os
 
 import aiofiles
 import aiohttp
 
 from mineserv.property import DOWNLOAD_DIR
+
 from .search import search_web
-from .version import MINECRAFT_VERSIONS, OFFICIAL, valid
+from .version import MINECRAFT_VERSIONS, OFFICIAL, check_latest, valid
+
+
+def exist(directory: str, version: str) -> bool:
+    """Check if minecraft server was downloaded previously
+
+    Args:
+        directory (str): directory, which will be sought
+        version (str): minecraft server version
+    """
+    return os.path.exists(f"{directory}/minecraft-server-{version}.jar")
 
 
 class ServerDownloader:
@@ -16,18 +27,20 @@ class ServerDownloader:
     """
 
     def __init__(self, version: str):
-        self._VERSION = version
+        self._VERSION = version.lower()
 
-    async def download(self):
+    async def download(self, path: str = None) -> None:
+        if exist(DOWNLOAD_DIR if not path else path, self._VERSION):
+            return
+
         if not await valid(self._VERSION):
             raise ValueError("Wrong version format")
 
-        output = f"{DOWNLOAD_DIR}/minecraft-server-{self._VERSION.lower()}.jar"
+        output = "{}/minecraft-server-{}.jar".format(
+            DOWNLOAD_DIR if not path else path, self._VERSION
+        )
 
-        if glob.glob(output):
-            return
-
-        if self._VERSION == "latest":
+        if self._VERSION == "latest" or self._VERSION == await check_latest():
             url = (await search_web(OFFICIAL, "a", {"aria-label": "mincraft version"}))[
                 0
             ]["href"]

@@ -3,6 +3,7 @@ import threading
 from typing import List
 
 from apps.server.models import Version
+
 from .search import search_web
 from .version import MINECRAFT_VERSIONS, OFFICIAL, check_latest, search
 
@@ -21,6 +22,7 @@ class SaveThreading(threading.Thread):
 
 
 async def _get_links() -> List[Version]:
+    """Create list of available version of minecraft servers"""
     links = []
     # link from official minecraft website
     official_url = (await search_web(OFFICIAL, "a", {"aria-label": "mincraft version"}))[0][

@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from bs4.element import ResultSet
 
 
-async def search_web(url: str, tag: str, attrs: dict) -> ResultSet:
+async def search_web(url: str, tag: str, attrs: dict = {}) -> ResultSet:
     """Search HTML elements at the given URL
 
     Args:
