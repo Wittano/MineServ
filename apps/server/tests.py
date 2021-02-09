@@ -1,15 +1,16 @@
 import os
+import signal
 
+import psutil
 import pytest
 from jproperties import Properties
 
+from apps.server.utils.java.properites import _property
+from apps.server.utils.java.server import MinecraftServer
 from mineserv.property import DOWNLOAD_DIR
-
-from .models import Version
+from .models import Server, Version
 from .utils.download import ServerDownloader, exist
 from .utils.link import SaveThreading
-from .utils.properites import _property
-from .utils.server import MinecraftServer
 
 versions = [
     "1.62.1",
@@ -42,8 +43,8 @@ async def test_download_sever(version: str):
         mc = ServerDownloader(version)
         await mc.download()
         with open(
-            f"{DOWNLOAD_DIR}/minecraft-server-{version.lower()}.jar",
-            "r",
+                f"{DOWNLOAD_DIR}/minecraft-server-{version.lower()}.jar",
+                "r",
         ) as f:
             assert os.path.getsize(f.name) > 0
     except ValueError:
@@ -73,7 +74,7 @@ def test_properties_property(property):
 @pytest.mark.parametrize("version", ["1.16.5", "1.4.4", "6.6.6", ""])
 @pytest.mark.django_db
 def test_server_create(version: str):
-    SaveThreading().run()
+    SaveThreading().start()
 
     try:
         server = MinecraftServer(f"test-{version}", version)
@@ -101,6 +102,57 @@ def test_server_create(version: str):
     with open(f"{path}/server.properties", "rb") as f:
         p.load(f, "utf-8")
         assert p["server-ip"].data == "127.0.0.1"
+
+
+@pytest.mark.parametrize("id", [1, 2])
+@pytest.mark.django_db
+def test_server_run(id: int):
+    SaveThreading().start()
+
+    try:
+        server = MinecraftServer(f"test-delete", "1.16.5")
+        server.create()
+        p = server.start(id)
+        s = Server.objects.get(id=id)
+
+        assert p.pid == s.pid
+        assert s.status == 2
+
+        os.kill(p.pid, signal.SIGKILL)
+    except Server.DoesNotExist:
+        assert Server.objects.count() == 1
+
+
+@pytest.mark.parametrize("id", [1, 2])
+@pytest.mark.django_db
+def test_server_stop(id: int):
+    SaveThreading().start()
+
+    try:
+        server = MinecraftServer(f"test-delete", "1.16.5")
+        server.create()
+        pid = server.start(id).pid
+        server.stop(id)
+
+        assert pid not in psutil.process_iter()
+    except Server.DoesNotExist:
+        assert Server.objects.count() == 1
+
+
+@pytest.mark.parametrize("id", [1, 2])
+@pytest.mark.django_db
+def test_server_delete(id: int):
+    SaveThreading().start()
+
+    try:
+        server = MinecraftServer(f"test-delete", "1.16.5")
+        server.create()
+        server.delete(id)
+
+        assert Server.objects.count() == 0
+        assert not os.path.exists(server._PATH)
+    except Server.DoesNotExist:
+        assert Server.objects.count() == 1
 
 
 @pytest.mark.parametrize("version", ["1.4.4", "1.5.6", "1.16.4", "1.7.10"])
