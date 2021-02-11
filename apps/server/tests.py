@@ -1,163 +1,50 @@
-import os
-import signal
+from django.test import TestCase
 
-import psutil
-import pytest
-from jproperties import Properties
-
-from apps.server.utils.java.properites import _property
-from apps.server.utils.java.server import MinecraftServer
-from mineserv.property import DOWNLOAD_DIR
-from .models import Server, Version
-from .utils.download import ServerDownloader, exist
+from .models import Server
 from .utils.link import SaveThreading
 
-versions = [
-    "1.62.1",
-    ";a",
-    "1.2.asdfasdfa",
-    "asdfgd.2.3",
-    "1.asdf.2",
-    "1.17.1",
-    "7.6.6",
-    " ",
-    "\n",
-]
 
-correct = [
-    "1.9",
-    "1.16.5",
-    "1.2.4",
-    "latest",
-    "LateST",
-]
+class ServerTest(TestCase):
+    def _create(self):
+        SaveThreading().run()
 
-versions.extend(correct)
+        return self.client.post(
+            "/server/create", data={"name": "test-1.16.5", "version": "1.16.5"}
+        )
 
+    def test_create_server(self):
+        response = self._create()
 
-@pytest.mark.parametrize("version", versions)
-@pytest.mark.asyncio
-@pytest.mark.django_db
-async def test_download_sever(version: str):
-    try:
-        mc = ServerDownloader(version)
-        await mc.download()
-        with open(
-                f"{DOWNLOAD_DIR}/minecraft-server-{version.lower()}.jar",
-                "r",
-        ) as f:
-            assert os.path.getsize(f.name) > 0
-    except ValueError:
-        assert version not in correct
-
-
-@pytest.mark.parametrize("property", [("a", "b"), [("a", "b"), ("b", "d")]])
-def test_properties_property(property):
-    path = "/tmp/test.properties"
-
-    if not os.path.exists(path):
-        with open(path, "w") as f:
-            f.write("s=s")
-
-    _property(path, property)
-
-    with open(path, "rb") as f:
-        p = Properties()
-        p.load(f, "utf-8")
-
-        if isinstance(property, tuple):
-            assert p[property[0]].data == property[1]
-        else:
-            assert p[property[0][0]].data == property[0][1]
-
-
-@pytest.mark.parametrize("version", ["1.16.5", "1.4.4", "6.6.6", ""])
-@pytest.mark.django_db
-def test_server_create(version: str):
-    SaveThreading().start()
-
-    try:
-        server = MinecraftServer(f"test-{version}", version)
-        server.create()
-    except Version.DoesNotExist:
-        assert True
-        return
-    except ValueError:
-        assert True
-        return
-    else:
-        pass
-
-    path = f"{DOWNLOAD_DIR}/test-{version}"
-
-    assert exist(path, version)
-
-    p = Properties()
-
-    if Version(version=version) > "1.7.9":
-        with open(f"{path}/eula.txt", "rb") as f:
-            p.load(f, "utf-8")
-            assert p["eula"].data == "true"
-
-    with open(f"{path}/server.properties", "rb") as f:
-        p.load(f, "utf-8")
-        assert p["server-ip"].data == "127.0.0.1"
-
-
-@pytest.mark.parametrize("id", [1, 2])
-@pytest.mark.django_db
-def test_server_run(id: int):
-    SaveThreading().start()
-
-    try:
-        server = MinecraftServer(f"test-delete", "1.16.5")
-        server.create()
-        p = server.start(id)
-        s = Server.objects.get(id=id)
-
-        assert p.pid == s.pid
-        assert s.status == 2
-
-        os.kill(p.pid, signal.SIGKILL)
-    except Server.DoesNotExist:
+        assert response.status_code == 200
         assert Server.objects.count() == 1
 
+    def test_start_server(self):
+        self._create()
+        response = self.client.post("/server/start/1")
 
-@pytest.mark.parametrize("id", [1, 2])
-@pytest.mark.django_db
-def test_server_stop(id: int):
-    SaveThreading().start()
+        server = Server.objects.get(id=1)
 
-    try:
-        server = MinecraftServer(f"test-delete", "1.16.5")
-        server.create()
-        pid = server.start(id).pid
-        server.stop(id)
+        assert response.status_code == 200
+        assert server.pid is not None
+        assert server.status == 2
 
-        assert pid not in psutil.process_iter()
-    except Server.DoesNotExist:
-        assert Server.objects.count() == 1
+        self.client.post("/server/stop/1")
 
+    def test_stop_server(self):
+        self._create()
+        self.client.post("/server/start/1")
+        response = self.client.post(
+            "/server/stop/1",
+        )
+        server = Server.objects.get(id=1)
 
-@pytest.mark.parametrize("id", [1, 2])
-@pytest.mark.django_db
-def test_server_delete(id: int):
-    SaveThreading().start()
+        assert response.status_code == 200
+        assert server.pid is None
+        assert server.status == 1
 
-    try:
-        server = MinecraftServer(f"test-delete", "1.16.5")
-        server.create()
-        server.delete(id)
+    def test_delete_server(self):
+        self._create()
+        response = self.client.delete("/server/delete/1")
 
+        assert response.status_code == 200
         assert Server.objects.count() == 0
-        assert not os.path.exists(server._PATH)
-    except Server.DoesNotExist:
-        assert Server.objects.count() == 1
-
-
-@pytest.mark.parametrize("version", ["1.4.4", "1.5.6", "1.16.4", "1.7.10"])
-def test_version_gt(version: str):
-    ver1 = Version(version="1.4.3")
-    ver2 = Version(version=version)
-
-    assert ver2 > ver1

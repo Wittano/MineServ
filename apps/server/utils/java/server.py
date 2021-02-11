@@ -12,13 +12,13 @@ from .properites import template
 
 
 class MinecraftServer:
-    """
+    """Manager for minecraft server
 
     Raises:
         DoesNotExist: raise when version, which was given, be won't found in database
     """
 
-    def __init__(self, name: str, version):
+    def __init__(self, name: str, version: str):
         if Version.objects.get(version=version):
             self._VERSION = version
         self._NAME = name
@@ -39,7 +39,6 @@ class MinecraftServer:
 
         pwd = os.getcwd()
         command = ["java", "-jar", f"minecraft-server-{self._VERSION}.jar"]
-
         command.extend(args)
 
         os.chdir(self._PATH)
@@ -60,8 +59,8 @@ class MinecraftServer:
         """
 
         Raises:
-            DoesNotExist: raise when version wasn't found
-
+            Version.DoesNotExist: raise when version wasn't found
+            ValueError: raise when version had wrong format
         """
         if not os.path.isdir(self._PATH):
             os.mkdir(self._PATH)
@@ -107,7 +106,8 @@ class MinecraftServer:
 
         return p
 
-    def stop(self, id: int) -> None:
+    @staticmethod
+    def stop(id: int) -> None:
         """Stop server
 
         Args:
@@ -132,5 +132,9 @@ class MinecraftServer:
         Raises:
             Server.DoesNotExist: raise when server wasn't found
         """
-        Server.objects.get(id=id).delete()
+        server = Server.objects.get(id=id)
+        if server.status != 1:
+            self.stop(id)
+
+        server.delete()
         shutil.rmtree(self._PATH)
