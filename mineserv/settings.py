@@ -44,6 +44,12 @@ INSTALLED_APPS = [
     "apps.server.apps.ServerConfig",
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASS': [
+        'rest_framework_simplejwt.authentication.JwtAuthentication'
+    ]
+}
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",

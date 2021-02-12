@@ -21,6 +21,7 @@ aiofiles = "*"
 coverage = "*"
 jproperties = "*"
 psutil = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 pytest = "*"
