@@ -1,18 +1,19 @@
-from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.decorators import api_view, renderer_classes, permission_classes, authentication_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.request import HttpRequest
 from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .models import Version, Server
 from .utils.java.server import MinecraftServer
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
 @renderer_classes((JSONRenderer, TemplateHTMLRenderer))
 def create(request: HttpRequest) -> Response:
-    if request.method != "POST":
-        return Response(status=405)
-
     try:
         mc = MinecraftServer(str(request.POST["name"]), str(request.POST["version"]))
         mc.create()
@@ -23,11 +24,10 @@ def create(request: HttpRequest) -> Response:
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
 @renderer_classes((JSONRenderer, TemplateHTMLRenderer))
 def start(request: HttpRequest, id: int) -> Response:
-    if request.method != "POST":
-        return Response(status=405)
-
     try:
         server = Server.objects.get(id=id)
         mc = MinecraftServer(server.name, server.version.version)
@@ -41,11 +41,10 @@ def start(request: HttpRequest, id: int) -> Response:
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
 @renderer_classes((JSONRenderer, TemplateHTMLRenderer))
 def stop(request: HttpRequest, id: int) -> Response:
-    if request.method != "POST":
-        return Response(status=405)
-
     try:
         MinecraftServer.stop(id)
     except Server.DoesNotExist:
@@ -55,11 +54,10 @@ def stop(request: HttpRequest, id: int) -> Response:
 
 
 @api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
 @renderer_classes((JSONRenderer, TemplateHTMLRenderer))
 def delete(request: HttpRequest, id: int) -> Response:
-    if request.method != "DELETE":
-        return Response(status=405)
-
     try:
         server = Server.objects.get(id=id)
         mc = MinecraftServer(server.name, server.version.version)
