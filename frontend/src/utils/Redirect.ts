@@ -1,5 +1,5 @@
 export default function redirect(to: string = '/') {
-    const endpoint = to == '/' ? '' : to
+    const endpoint = to === '/' ? '' : to
 
-    window.location.replace(`${window.location.origin}/${endpoint}`)
+    window.location.replace(`${window.location.origin}${endpoint}`)
 }
