@@ -31,13 +31,8 @@ export default function Form(props) {
         ).then(res => {
             setError(false)
 
-            if (res.status < 300) {
-                return res.data
-            } else {
-                setError(true)
-                setMsg("Incorrect username or password")
-            }
-        }).catch(err => {
+            return res.data
+        }).catch(_ => {
             setError(true)
             setMsg("Incorrect username or password")
 
