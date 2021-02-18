@@ -1,6 +1,7 @@
 from typing import List
 
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Version(models.Model):
@@ -33,3 +34,4 @@ class Server(models.Model):
     version = models.ForeignKey(Version, on_delete=models.DO_NOTHING)
     status = models.IntegerField(choices=_SERVER_STATUS, default=1)
     pid = models.IntegerField(null=True, unique=True)
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)

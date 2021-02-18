@@ -5,6 +5,7 @@ import signal
 import subprocess
 from typing import List, Optional
 
+from django.contrib.auth.models import User
 from apps.server.models import Server, Version
 from apps.server.utils.download import ServerDownloader, exist
 from mineserv.property import DOWNLOAD_DIR
@@ -55,7 +56,7 @@ class MinecraftServer:
         """Run minecraft server"""
         return self._process(["--nogui"])
 
-    def create(self) -> None:
+    def create(self, user: Optional[User] = None) -> None:
         """
 
         Raises:
@@ -81,7 +82,7 @@ class MinecraftServer:
         template(self._PATH, self._VERSION)
 
         server = Server(
-            version=Version.objects.get(version=self._VERSION), name=self._NAME
+            version=Version.objects.get(version=self._VERSION), name=self._NAME, user=user
         )
         server.save()
 

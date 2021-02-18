@@ -8,10 +8,7 @@ from .utils.link import SaveThreading
 
 class ServerTest(APITestCase):
     def _auth(self):
-        user = {
-            "username": "tester",
-            "password": "12345"
-        }
+        user = {"username": "tester", "password": "12345"}
         self.client.post("/api/user", data=user, follow=True)
         response = self.client.post("/api/token", data=user, follow=True)
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {response.data["access"]}')
@@ -28,12 +25,19 @@ class ServerTest(APITestCase):
             **header,
         )
 
+    def _json(self, response):
+        """Check if response contain json data"""
+        json = response.json()
+
+        assert json is not None
+
     def test_create_server(self):
         header = self._auth()
 
         response = self._create(header)
 
         assert response.status_code == 200
+        self._json(response)
         assert Server.objects.count() == 1
 
     def test_start_server(self):
@@ -46,6 +50,7 @@ class ServerTest(APITestCase):
         server = Server.objects.get(id=1)
 
         assert response.status_code == 200
+        self._json(response)
         assert server.pid is not None
         assert server.status == 2
 
@@ -60,6 +65,7 @@ class ServerTest(APITestCase):
         server = Server.objects.get(id=1)
 
         assert response.status_code == 200
+        self._json(response)
         assert server.pid is None
         assert server.status == 1
 
