@@ -18,12 +18,12 @@ html-parser = "*"
 asyncio = "*"
 aiohttp = "*"
 aiofiles = "*"
-coverage = "*"
 jproperties = "*"
 psutil = "*"
 djangorestframework-simplejwt = "*"
 
 [dev-packages]
+coverage = "*"
 pytest = "*"
 rope = "*"
 jedi = "*"

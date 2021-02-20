@@ -19,7 +19,7 @@ class ServerTest(APITestCase):
         SaveThreading().run()
 
         return self.client.post(
-            "/server/create",
+            "/api/server/create",
             data={"name": "test-1.16.5", "version": "1.16.5"},
             follow=True,
             **header,
@@ -45,7 +45,7 @@ class ServerTest(APITestCase):
 
         self._create(header)
 
-        response = self.client.post("/server/start/1", follow=True, **header)
+        response = self.client.post("/api/server/start/1", follow=True, **header)
 
         server = Server.objects.get(id=1)
 
@@ -54,14 +54,14 @@ class ServerTest(APITestCase):
         assert server.pid is not None
         assert server.status == 2
 
-        self.client.post("/server/stop/1", follow=True, **header)
+        self.client.post("/api/server/stop/1", follow=True, **header)
 
     def test_stop_server(self):
         header = self._auth()
 
         self._create(header)
-        self.client.post("/server/start/1", follow=True, **header)
-        response = self.client.post("/server/stop/1", follow=True, **header)
+        self.client.post("/api/server/start/1", follow=True, **header)
+        response = self.client.post("/api/server/stop/1", follow=True, **header)
         server = Server.objects.get(id=1)
 
         assert response.status_code == 200
@@ -73,7 +73,7 @@ class ServerTest(APITestCase):
         header = self._auth()
 
         self._create(header)
-        response = self.client.delete("/server/delete/1", follow=True, **header)
+        response = self.client.delete("/api/server/delete/1", follow=True, **header)
 
         assert response.status_code == 200
         assert Server.objects.count() == 0
