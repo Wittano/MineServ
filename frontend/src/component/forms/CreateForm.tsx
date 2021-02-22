@@ -1,7 +1,7 @@
 import Input from "../Input";
 import { useEffect, useState } from "react";
 import { DoneButton, RefuseButton } from "../Buttons";
-import { authClient } from "../../utils/Client";
+import { authClient, refresh } from "../../utils/Client";
 
 const getVersion = async () => {
   const response: Array<any> = await authClient
@@ -19,22 +19,25 @@ export default function CreateForm(props) {
   // Hooks
   const [serverName, setServerName] = useState("");
   const [version, setVersion] = useState([]);
-  const [select, setSelecte] = useState("");
+  const [select, setSelecte] = useState(version[0]);
   const [error, setError] = useState("");
   const [wait, setWait] = useState(false);
   useEffect(() => {
     versions();
   }, []);
 
-  const createServer = async (e) => {
+  const createServer = async () => {
     setWait(true);
 
     const res = await authClient
       .post("/server/create", {
         name: serverName,
-        version: select,
+        version: !select ? version[0] : select,
       })
-      .catch((err) => err);
+      .catch(async (err) => {
+        await refresh();
+        return err;
+      });
 
     setWait(false);
 
@@ -44,6 +47,8 @@ export default function CreateForm(props) {
     } else {
       setError(res.message);
     }
+
+    props.updateServer([...props.servers, res.data]);
   };
 
   const waitNotify = () => {
@@ -66,12 +71,10 @@ export default function CreateForm(props) {
   const divClass = "flex space-x-4 items-center mr-10 ml-10";
   return (
     <div>
-      <h2 className="text-xl text-center">Create server</h2>
       <div className="flex justify-between items-center">
         <div className={divClass + " flex-grow"}>
           <Input name="Name" type="text" onChange={nameInput} />
           <select
-            onLoad={selectInput}
             onChange={selectInput}
             className="border bg-white rounded px-3 py-2 outline-none"
           >

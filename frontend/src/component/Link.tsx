@@ -1,0 +1,12 @@
+import { Link } from "react-router-dom";
+
+export default function BaseLink(props) {
+  return (
+    <Link
+      className="inline-block px-6 py-2 text-xs font-medium leading-6 text-center text-white uppercase transition bg-yellow-500 rounded shadow ripple hover:shadow-lg hover:bg-yellow-600 focus:outline-none"
+      to={props.to}
+    >
+      {props.text}
+    </Link>
+  );
+}

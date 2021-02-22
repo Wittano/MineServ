@@ -82,7 +82,9 @@ class MinecraftServer:
         template(self._PATH, self._VERSION)
 
         server = Server(
-            version=Version.objects.get(version=self._VERSION), name=self._NAME, user=user
+            version=Version.objects.get(version=self._VERSION),
+            name=self._NAME,
+            user=user,
         )
         server.save()
 
@@ -138,4 +140,6 @@ class MinecraftServer:
             self.stop(id)
 
         server.delete()
-        shutil.rmtree(self._PATH)
+
+        if os.path.isdir(self._PATH):
+            shutil.rmtree(self._PATH)

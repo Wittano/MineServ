@@ -21,6 +21,7 @@ aiofiles = "*"
 jproperties = "*"
 psutil = "*"
 djangorestframework-simplejwt = "*"
+django-filter = "*"
 
 [dev-packages]
 coverage = "*"

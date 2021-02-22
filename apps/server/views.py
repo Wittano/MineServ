@@ -19,6 +19,17 @@ from .utils.java.server import MinecraftServer
 class VersionListView(ListAPIView):
     queryset = Version.objects.all()
     serializer_class = VersionSerialize
+    filterset_fields = ["id"]
+
+    def get_queryset(self):
+        try:
+            return (
+                self.queryset.filter(id=self.kwargs["id"])
+                if self.kwargs["id"]
+                else self.queryset
+            )
+        except KeyError:
+            return self.queryset
 
 
 class ServerListView(ListAPIView):
@@ -53,7 +64,7 @@ def start(request: HttpRequest, id: int) -> Response:
         mc.start(id)
 
         serialize = ServerSerialize(server)
-    except (ValueError, Version.DoesNotExist, Server.DoesNotExist):
+    except (ValueError, Version.DoesNotExist):
         return Response(status=400, data={"message": "Wrong version format"})
     except Server.DoesNotExist:
         return Response(status=400, data={"message": "Server doesn't exist"})

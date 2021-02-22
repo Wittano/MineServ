@@ -1,6 +1,6 @@
 import { useState } from "react";
 import User from "../../models/User";
-import { client } from "../../utils/Client";
+import { client, refresh } from "../../utils/Client";
 import Error from "../Error";
 import Input from "../Input";
 
@@ -31,7 +31,8 @@ export default function Form(props) {
 
         return res.data;
       })
-      .catch((_) => {
+      .catch(async (_) => {
+        await refresh();
         setError(true);
         setMsg("Incorrect username or password");
 

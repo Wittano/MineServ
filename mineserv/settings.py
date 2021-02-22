@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # Third-party apps
     "corsheaders",
     "rest_framework",
+    "django_filters",
     # Apps
     "apps.server.apps.ServerConfig",
     "apps.user.apps.UserConfig",
@@ -54,6 +55,7 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.TemplateHTMLRenderer",
     ],
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 
 SIMPLE_JWT = {
