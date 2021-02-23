@@ -11,18 +11,26 @@ plugins {
 group = "com.wittano"
 version = "0.1.2"
 java.sourceCompatibility = JavaVersion.VERSION_11
+java.targetCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
+tasks.processResources {
+    dependsOn(":frontend:copy")
+}
+
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-batch")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-rsocket")
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    val springVersion = "2.4.3"
+
+    implementation("org.springframework.boot:spring-boot-starter-batch:${springVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:${springVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-rsocket:${springVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-security:${springVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-validation:${springVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-webflux:${springVersion}")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -30,8 +38,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.springframework.security:spring-security-messaging")
     implementation("org.springframework.security:spring-security-rsocket")
-    runtimeOnly("com.h2database:h2")
+
     runtimeOnly("org.postgresql:postgresql")
+
+    testRuntimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.springframework.batch:spring-batch-test")
@@ -41,10 +51,12 @@ dependencies {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
 }
 
 tasks.withType<Test> {
+    this.systemProperties(Pair("spring.profiles.active", "test"))
+
     useJUnitPlatform()
 }
