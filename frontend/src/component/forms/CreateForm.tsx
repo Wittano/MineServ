@@ -2,6 +2,7 @@ import Input from "../Input";
 import { useEffect, useState } from "react";
 import { DoneButton, RefuseButton } from "../Buttons";
 import { authClient, refresh } from "../../utils/Client";
+import Error from "../Error";
 
 const getVersion = async () => {
   const response: Array<any> = await authClient
@@ -21,13 +22,12 @@ export default function CreateForm(props) {
   const [version, setVersion] = useState([]);
   const [select, setSelecte] = useState(version[0]);
   const [error, setError] = useState("");
-  const [wait, setWait] = useState(false);
   useEffect(() => {
     versions();
   }, []);
 
   const createServer = async () => {
-    setWait(true);
+    props.setWait(true);
 
     const res = await authClient
       .post("/server/create", {
@@ -39,7 +39,7 @@ export default function CreateForm(props) {
         return err;
       });
 
-    setWait(false);
+    props.setWait(false);
 
     if (res.status === 200) {
       setError("");
@@ -51,17 +51,9 @@ export default function CreateForm(props) {
     props.updateServer([...props.servers, res.data]);
   };
 
-  const waitNotify = () => {
-    if (wait) {
-      return (
-        <p className="text-red-500">Please wait. Server is being created</p>
-      );
-    }
-  };
-
   const showError = () => {
     if (error !== "") {
-      return <p>{error}</p>;
+      return <Error msg={error} />;
     }
   };
 
@@ -82,8 +74,7 @@ export default function CreateForm(props) {
               return <option>{element}</option>;
             })}
           </select>
-          {waitNotify}
-          {showError}
+          {showError()}
         </div>
         <div className={divClass}>
           <RefuseButton text="Cancel" click={props.cancelClick} />
