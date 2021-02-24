@@ -36,8 +36,12 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-    implementation("org.springframework.security:spring-security-messaging")
-    implementation("org.springframework.security:spring-security-rsocket")
+    implementation("org.springframework.security:spring-security-messaging:${springVersion}")
+    implementation("org.springframework.security:spring-security-rsocket:${springVersion}")
+
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
+    implementation("org.springframework.boot", "spring-boot-starter-thymeleaf", springVersion)
+
 
     runtimeOnly("org.postgresql:postgresql")
 

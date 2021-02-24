@@ -36,5 +36,16 @@ tasks.register("copy", Copy::class) {
     inputs.dir("build")
 
     from("build")
+    exclude("build/index.html")
     into(staticDir)
+
+    finalizedBy("copyHtml")
+}
+
+tasks.register("copyHtml", Copy::class) {
+    group = "build"
+    description = "Copy index.html to templates directory"
+
+    from("build/index.html")
+    into(project(":backend").projectDir.path + "/src/main/resources/templates")
 }
