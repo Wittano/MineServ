@@ -57,7 +57,7 @@ yarn-error.log*
 ncp-debug.log
 npm-debug.log
 bower_component
-src/config/configSec.js
+backend/src/config/configSec.js
 
 .DS_STORE
 *~
