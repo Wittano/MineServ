@@ -31,24 +31,26 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security:${springVersion}")
     implementation("org.springframework.boot:spring-boot-starter-validation:${springVersion}")
     implementation("org.springframework.boot:spring-boot-starter-webflux:${springVersion}")
+    implementation("org.springframework.security:spring-security-messaging")
+    implementation("org.springframework.security:spring-security-rsocket")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-    implementation("org.springframework.security:spring-security-messaging:${springVersion}")
-    implementation("org.springframework.security:spring-security-rsocket:${springVersion}")
 
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
     implementation("org.springframework.boot", "spring-boot-starter-thymeleaf", springVersion)
+    implementation("io.jsonwebtoken", "jjwt", "0.9.1")
 
 
     runtimeOnly("org.postgresql:postgresql")
 
     testRuntimeOnly("com.h2database:h2")
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
-    testImplementation("org.springframework.batch:spring-batch-test")
+    testImplementation("org.springframework.batch:spring-batch-test:")
     testImplementation("org.springframework.security:spring-security-test")
 }
 
@@ -62,5 +64,7 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     this.systemProperties(Pair("spring.profiles.active", "test"))
 
-    useJUnitPlatform()
+    useJUnitPlatform {
+        this.includeEngines("junit-jupiter", "junit-vintage")
+    }
 }
