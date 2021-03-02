@@ -64,7 +64,7 @@ backend/src/config/configSec.js
 .DS_STORE
 *~
 *.pyc
-static
+/backend/src/main/resources/static/
 .grunt
 _SpecRunner.html
 __benchmarks__

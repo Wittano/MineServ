@@ -2,8 +2,7 @@ tasks.register("cleanProject", Delete::class) {
     description = "Clean project and every submodules"
     group = "clean"
 
-    dependsOn(":frontend:clean")
-    dependsOn(":backend:clean")
+    dependsOn(":frontend:clean", ":backend:clean")
 
     delete("build")
 }

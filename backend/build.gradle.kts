@@ -9,9 +9,9 @@ plugins {
 }
 
 group = "com.wittano"
-version = "0.1.2"
+version = System.getProperty("project.version")
 java.sourceCompatibility = JavaVersion.VERSION_11
-java.targetCompatibility = JavaVersion.VERSION_1_8
+java.targetCompatibility = JavaVersion.VERSION_11
 
 repositories {
     mavenLocal()
@@ -22,14 +22,18 @@ tasks.processResources {
     dependsOn(":frontend:copy")
 }
 
+tasks.jar {
+    this.archiveBaseName.set("mineserv")
+}
+
 dependencies {
     val springVersion = "2.4.3"
 
+    implementation(group = "org.apache.logging.log4j", name = "log4j-api", version = "2.14.0")
     implementation("org.springframework.boot:spring-boot-starter-batch:${springVersion}")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:${springVersion}")
     implementation("org.springframework.boot:spring-boot-starter-rsocket:${springVersion}")
     implementation("org.springframework.boot:spring-boot-starter-security:${springVersion}")
-    implementation("org.springframework.boot:spring-boot-starter-validation:${springVersion}")
     implementation("org.springframework.boot:spring-boot-starter-webflux:${springVersion}")
     implementation("org.springframework.security:spring-security-messaging")
     implementation("org.springframework.security:spring-security-rsocket")
@@ -39,14 +43,19 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
+
+    //Async HTTP Client
+    implementation(group = "org.jsoup", name = "jsoup", version = "1.13.1")
+
+
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
     implementation("org.springframework.boot", "spring-boot-starter-thymeleaf", springVersion)
     implementation("io.jsonwebtoken", "jjwt", "0.9.1")
 
 
     runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("com.h2database:h2")
 
-    testRuntimeOnly("com.h2database:h2")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
