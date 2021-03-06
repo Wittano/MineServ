@@ -1,4 +1,4 @@
-package com.wittano.mineserv.components.static
+package com.wittano.mineserv.enums
 
 enum class MinecraftServerLinks(val link: String) {
     OFFICIAL("https://www.minecraft.net/en-us/download/server"),

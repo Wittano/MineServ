@@ -11,7 +11,7 @@ plugins {
 group = "com.wittano"
 version = System.getProperty("project.version")
 java.sourceCompatibility = JavaVersion.VERSION_11
-java.targetCompatibility = JavaVersion.VERSION_11
+java.targetCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
     mavenLocal()
