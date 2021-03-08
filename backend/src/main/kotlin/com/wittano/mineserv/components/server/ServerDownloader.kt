@@ -1,7 +1,7 @@
 package com.wittano.mineserv.components.server
 
 import com.wittano.mineserv.components.exceptions.VersionException
-import com.wittano.mineserv.repository.LinkRepository
+import com.wittano.mineserv.repository.VersionRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.io.File
@@ -14,7 +14,7 @@ import java.nio.file.Path
 
 @Component
 class ServerDownloader(
-    private val repo: LinkRepository
+    private val repo: VersionRepository
 ) {
 
     @Value("\${project.download.dir}")

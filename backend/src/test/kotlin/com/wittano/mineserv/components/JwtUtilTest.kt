@@ -1,5 +1,6 @@
 package com.wittano.mineserv.components
 
+import com.wittano.mineserv.components.utils.JwtUtil
 import io.jsonwebtoken.JwtException
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

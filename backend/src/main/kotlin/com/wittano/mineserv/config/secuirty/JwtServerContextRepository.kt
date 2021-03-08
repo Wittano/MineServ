@@ -1,6 +1,6 @@
 package com.wittano.mineserv.config.secuirty
 
-import com.wittano.mineserv.components.JwtUtil
+import com.wittano.mineserv.components.utils.JwtUtil
 import com.wittano.mineserv.repository.UserRepository
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken

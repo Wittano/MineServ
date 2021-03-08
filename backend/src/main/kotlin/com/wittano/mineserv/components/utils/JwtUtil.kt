@@ -1,4 +1,4 @@
-package com.wittano.mineserv.components
+package com.wittano.mineserv.components.utils
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.JwtException

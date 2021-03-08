@@ -1,6 +1,6 @@
 package com.wittano.mineserv.controller
 
-import com.wittano.mineserv.components.JwtUtil
+import com.wittano.mineserv.components.utils.JwtUtil
 import com.wittano.mineserv.data.User
 import com.wittano.mineserv.data.UserRequest
 import org.junit.jupiter.api.Assertions.*

@@ -1,7 +1,7 @@
 package com.wittano.mineserv.components.links
 
 import com.wittano.mineserv.config.scheduling.InsertLinks
-import com.wittano.mineserv.repository.LinkRepository
+import com.wittano.mineserv.repository.VersionRepository
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -15,7 +15,7 @@ internal class InsertLinksTest {
     private lateinit var insertLinks: InsertLinks
 
     @Autowired
-    private lateinit var repo: LinkRepository
+    private lateinit var repo: VersionRepository
 
     @Test
     fun insertLinks_ShouldReturnLinks() {

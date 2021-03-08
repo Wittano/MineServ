@@ -1,6 +1,6 @@
 package com.wittano.mineserv.service.user
 
-import com.wittano.mineserv.components.JwtUtil
+import com.wittano.mineserv.components.utils.JwtUtil
 import com.wittano.mineserv.data.UserRequest
 import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.ReactiveAuthenticationManager
