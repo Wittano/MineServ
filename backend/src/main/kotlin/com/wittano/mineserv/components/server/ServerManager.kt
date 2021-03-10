@@ -33,7 +33,7 @@ class ServerManager(
         }
     }
 
-    fun init(server: Server) {
+    fun create(server: Server) {
         downloader.download(server.name, server.version.version)
 
         val process = ProcessBuilder(
@@ -56,12 +56,11 @@ class ServerManager(
         }
 
         properties.default(server.name)
-        repo.save(server)
     }
 
     @Throws(IllegalOperationException::class)
-    fun run(server: Server) {
-        if (repo.findAllByOwner(server.owner)!!.none {
+    fun start(server: Server) {
+        if (repo.findAllByOwner(server.owner).none {
                 it.name == server.name
             }) {
             throw IllegalOperationException("You can't run server, if you aren't owner")
@@ -84,7 +83,7 @@ class ServerManager(
         ProcessHandle.of(server.pid!!).ifPresent {
             it.destroy()
             it.onExit().completeAsync({
-                logger.info("Server ${server.name} was closed by ${server.owner.name}")
+                logger.info("Server ${server.name} was closed by ${server.owner.username}")
 
                 server.pid = null
                 repo.save(server)

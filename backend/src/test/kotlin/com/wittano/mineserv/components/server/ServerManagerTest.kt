@@ -63,15 +63,15 @@ internal class ServerManagerTest {
         val server = Server(
             null,
             "testServer${version}",
-            userRepo.findByName("test")!!,
+            userRepo.findByUsername("test")!!,
             versionRepo.findFirstByVersion(version)!!,
             null
         )
 
 
-        manager.init(server)
+        manager.create(server)
 
-        val testServer = serverRepo.findAllByOwner(server.owner)!!.filter {
+        val testServer = serverRepo.findAllByOwner(server.owner).filter {
             it.name == server.name
         }[0]
 
@@ -111,15 +111,15 @@ internal class ServerManagerTest {
         val server = Server(
             null,
             "testServer",
-            userRepo.findByName("test")!!,
+            userRepo.findByUsername("test")!!,
             versionRepo.findFirstByVersion("1.16.5")!!,
             null
         )
 
-        manager.init(server)
-        manager.run(server)
+        manager.create(server)
+        manager.start(server)
 
-        val testServer = serverRepo.findAllByOwner(server.owner)!!.filter {
+        val testServer = serverRepo.findAllByOwner(server.owner).filter {
             it.name == server.name
         }[0]
 
@@ -133,15 +133,15 @@ internal class ServerManagerTest {
         val server = Server(
             null,
             "testServer3",
-            userRepo.findByName("test")!!,
+            userRepo.findByUsername("test")!!,
             versionRepo.findFirstByVersion("1.16.5")!!,
             null
         )
 
-        manager.init(server)
+        manager.create(server)
         manager.delete(server)
 
-        assertEquals(0, serverRepo.findAllByOwner(server.owner)!!.filter {
+        assertEquals(0, serverRepo.findAllByOwner(server.owner).filter {
             it.name == server.name
         }.size)
     }

@@ -5,7 +5,6 @@ import com.wittano.mineserv.repository.VersionRepository
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
-import java.sql.SQLException
 
 /**
  * Component for insert links to database
@@ -24,11 +23,14 @@ class InsertLinks(
     fun insert() {
         try {
             val list = repo.findAll()
-
-            repo.saveAll(createLinks.create().filter {
+            val filteredList = createLinks.create().filter {
                 !list.contains(it)
-            })
-        } catch (e: SQLException) {
+            }
+
+            if (filteredList.isNotEmpty()) {
+                repo.saveAll(filteredList)
+            }
+        } catch (e: Exception) {
             logger.warn(e.message)
         }
     }

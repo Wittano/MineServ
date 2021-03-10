@@ -13,7 +13,8 @@ data class User(
     val id: Int?,
     @JsonView(DefaultView.Companion.External::class)
     @Column(unique = true, nullable = false)
-    val name: String,
+    val username: String,
     @JsonView(DefaultView.Companion.Internal::class)
+    @Column(nullable = false)
     val password: String
 )

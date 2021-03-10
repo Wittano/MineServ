@@ -17,9 +17,9 @@ class UserDetailsService(
 ) : ReactiveUserDetailsService {
     override fun findByUsername(username: String?): Mono<UserDetails> =
         try {
-            Mono.just(repo.findByName(username!!)!!).map {
+            Mono.just(repo.findByUsername(username!!)!!).map {
                 User(
-                    it!!.name,
+                    it!!.username,
                     it.password,
                     mutableListOf(SimpleGrantedAuthority("USER"))
                 )

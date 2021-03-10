@@ -32,10 +32,10 @@ class JwtServerContextRepository(
         }.defaultIfEmpty("").flatMap {
             if (it != null && it.isNotBlank()) {
                 Mono.just(jwtUtil.decode(it).subject).flatMap { username ->
-                    Mono.just(repo.findByName(username)!!).flatMap { user ->
+                    Mono.just(repo.findByUsername(username)!!).flatMap { user ->
                         auth.authenticate(
                             UsernamePasswordAuthenticationToken(
-                                user.name,
+                                user.username,
                                 user.password
                             )
                         ).map { auth ->
