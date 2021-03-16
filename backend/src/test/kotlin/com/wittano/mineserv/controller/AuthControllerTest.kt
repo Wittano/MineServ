@@ -31,7 +31,7 @@ internal class AuthControllerTest {
 
     private data class UserResponse(
         val id: Int?,
-        val name: String
+        val username: String
     )
 
     @Test
@@ -49,7 +49,7 @@ internal class AuthControllerTest {
         assertNotNull(response)
 
         try {
-            assertEquals(response.responseBody!!.name, testUser.username)
+            assertEquals(response.responseBody!!.username, testUser.username)
         } catch (e: NullPointerException) {
             fail()
         }

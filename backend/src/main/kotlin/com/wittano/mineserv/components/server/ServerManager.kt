@@ -24,6 +24,9 @@ class ServerManager(
 
     private val logger = LoggerFactory.getLogger(ServerManager::class.qualifiedName)
 
+    /**
+     * Get path to JRE binary
+     */
     private fun getJRE(): String {
         // Check if OS is Windows
         return if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
@@ -44,6 +47,10 @@ class ServerManager(
             "--init"
         ).directory(File("${downloadDir}/${server.name}")).start()
 
+        // In minecraft 1.8 and higher, Mojang change server.jar and add some flag to server.
+        // --init - create necessary files to create configuration for any server
+        // In earlier version, didn't have any flags and necessary files was created right after run server.
+        // So I can stop sever on another thread and don't have to wait, until he finished him job
         if (server.version > "1.7.9") {
             process.waitFor()
         } else {
@@ -56,6 +63,8 @@ class ServerManager(
         }
 
         properties.default(server.name)
+
+        repo.save(server)
     }
 
     @Throws(IllegalOperationException::class)

@@ -11,11 +11,11 @@ data class Server(
     val id: Long?,
     @Column(unique = true, nullable = false)
     val name: String,
-    @OneToOne(cascade = [CascadeType.REFRESH])
+    @ManyToOne(cascade = [CascadeType.REFRESH])
     @JoinColumn(name = "owner_id")
     val owner: User,
-    @OneToOne(optional = false)
-    @JoinColumn(name = "version_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "version_id", unique = false)
     val version: Version,
     @JsonView(DefaultView.Companion.Internal::class)
     var pid: Long?,

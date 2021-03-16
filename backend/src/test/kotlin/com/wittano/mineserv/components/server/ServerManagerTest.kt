@@ -18,6 +18,7 @@ import java.io.FileInputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
+import kotlin.math.abs
 
 @SpringBootTest
 internal class ServerManagerTest {
@@ -42,10 +43,8 @@ internal class ServerManagerTest {
 
     @BeforeEach
     private fun addUser() {
-        try {
-            insertLinks.insert()
-        } catch (e: Exception) {
-        }
+        insertLinks.insert()
+
         try {
             userRepo.save(User(null, "test", "test12345"))
             userRepo.save(User(null, "test2", "test12345"))

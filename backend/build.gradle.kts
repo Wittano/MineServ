@@ -43,18 +43,15 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
-
-    //Async HTTP Client
+    //Web scrapper
     implementation(group = "org.jsoup", name = "jsoup", version = "1.13.1")
-
 
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
     implementation("org.springframework.boot", "spring-boot-starter-thymeleaf", springVersion)
     implementation("io.jsonwebtoken", "jjwt", "0.9.1")
 
-
     runtimeOnly("org.postgresql:postgresql")
-    runtimeOnly("com.h2database:h2")
+    testRuntimeOnly("com.h2database:h2")
 
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
