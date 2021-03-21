@@ -18,10 +18,6 @@ repositories {
     mavenCentral()
 }
 
-tasks.processResources {
-    dependsOn(":frontend:copy")
-}
-
 tasks.jar {
     this.archiveBaseName.set("mineserv")
 }

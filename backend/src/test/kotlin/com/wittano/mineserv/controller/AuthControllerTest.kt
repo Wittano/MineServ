@@ -38,7 +38,7 @@ internal class AuthControllerTest {
     fun register_ShouldReturnUserDataWithoutPassword() {
         val response = client
             .post()
-            .uri("/user")
+            .uri("/api/user")
             .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(testUser))
             .exchange()
@@ -64,7 +64,7 @@ internal class AuthControllerTest {
     fun register_ShouldReturnBadRequestStatus(name: String) {
         val res = client
             .post()
-            .uri("/user")
+            .uri("/api/user")
             .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(UserRequest(name, testUser.password)))
             .exchange()
@@ -91,7 +91,7 @@ internal class AuthControllerTest {
 
         val response = client
             .post()
-            .uri("/auth")
+            .uri("/api/auth")
             .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(testUser))
             .exchange()
@@ -111,7 +111,7 @@ internal class AuthControllerTest {
     fun auth_ShouldReturnErrorMessage(password: String) {
         client
             .post()
-            .uri("/user")
+            .uri("/api/user")
             .bodyValue(
                 User(
                     null,
@@ -123,7 +123,7 @@ internal class AuthControllerTest {
 
         val res = client
             .post()
-            .uri("/auth")
+            .uri("/api/auth")
             .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(testUser))
             .exchange()

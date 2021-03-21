@@ -8,5 +8,5 @@ export default function LoginPage() {
     redirect();
   };
 
-  return <Form title="Login" successFunc={success} action="/token" />;
+  return <Form title="Login" successFunc={success} action="/auth" />;
 }

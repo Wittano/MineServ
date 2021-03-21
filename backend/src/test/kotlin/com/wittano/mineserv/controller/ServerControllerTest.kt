@@ -59,7 +59,7 @@ internal class ServerControllerTest {
         } catch (e: IndexOutOfBoundsException) {
             client
                 .post()
-                .uri("/server")
+                .uri("/api/server")
                 .body(BodyInserters.fromValue(testServer))
                 .exchange()
                 .expectStatus().isCreated
@@ -79,7 +79,7 @@ internal class ServerControllerTest {
 
         client
             .delete()
-            .uri("/server/${testServer.id}")
+            .uri("/api/server/${testServer.id}")
             .exchange()
             .expectStatus().isOk
             .expectBody().isEmpty
@@ -91,12 +91,12 @@ internal class ServerControllerTest {
 
         client
             .put()
-            .uri("/server/start/${testServer.id}")
+            .uri("/api/server/start/${testServer.id}")
             .exchange()
 
         client
             .put()
-            .uri("/server/stop/${testServer.id}")
+            .uri("/api/server/stop/${testServer.id}")
             .exchange()
             .expectStatus().isOk
             .expectBody().isEmpty
@@ -108,7 +108,7 @@ internal class ServerControllerTest {
 
         client
             .put()
-            .uri("/server/start/${testServer.id}")
+            .uri("/api/server/start/${testServer.id}")
             .exchange()
             .expectStatus().isOk
             .expectBody().isEmpty

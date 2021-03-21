@@ -9,9 +9,10 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.toMono
 
 @RestController
-@RequestMapping("/server")
+@RequestMapping("/api/server")
 class ServerController(
     private val manager: ServerService,
     private val validator: Validator<Server>,
@@ -22,7 +23,7 @@ class ServerController(
         action(repo.findById(id).orElse(null)).map {
             ResponseEntity.ok().build<String>()
         }.onErrorResume {
-            Mono.just(ResponseEntity(it.message, HttpStatus.BAD_REQUEST))
+            ResponseEntity(it.message, HttpStatus.BAD_REQUEST).toMono()
         }
 
     @PostMapping("")

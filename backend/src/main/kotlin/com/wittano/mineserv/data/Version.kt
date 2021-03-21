@@ -14,6 +14,14 @@ data class Version(
     val version: String,
     val link: String
 ) {
+    override fun equals(other: Any?): Boolean {
+        return if (other is Version) {
+            this.link == other.link && this.version == other.version
+        } else {
+            false
+        }
+    }
+
     operator fun compareTo(other: String): Int {
         return compareValuesBy(this, other) {
             return compere(this.version.split("."), other.split("."))

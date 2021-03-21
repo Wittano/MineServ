@@ -36,7 +36,7 @@ internal class ServerDownloaderTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["1.16.5", "1.2.3", "1.5.2", "1.8.8", "1.12.2"])
+    @ValueSource(strings = ["1.16.5", "1.2.3"])
     fun download_ShouldDownloadServerJar(version: String) {
         try {
             downloader.download("test", version)

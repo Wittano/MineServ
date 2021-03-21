@@ -12,11 +12,14 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.toMono
 import java.sql.SQLException
 
 @RestController
+@RequestMapping("/api")
 class AuthController(
     private val authService: UserAuthService,
     private val userService: UserService,
@@ -35,15 +38,13 @@ class AuthController(
             return authService.auth(userRequest).map {
                 ResponseEntity.ok(it)
             }.onErrorResume {
-                Mono.just(
-                    ResponseEntity
-                        .status(HttpStatus.BAD_REQUEST)
-                        .contentType(MediaType.TEXT_PLAIN)
-                        .body(it.message)
-                )
+                ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .body(it.message).toMono()
             }
         } catch (e: ValidationException) {
-            Mono.just(ResponseEntity.badRequest().body(e.message))
+            ResponseEntity.badRequest().body(e.message).toMono()
         }
     }
 
@@ -61,13 +62,11 @@ class AuthController(
             return userService.save(userRequest).map {
                 ResponseEntity.status(HttpStatus.CREATED).body(it as Any)
             }.onErrorResume {
-                Mono.just(
-                    ResponseEntity.badRequest()
-                ).map { response ->
+                ResponseEntity.badRequest().toMono().map {
                     if (it is SQLException) {
-                        response.body("User exists!")
+                        it.body("User exists!")
                     } else {
-                        response.body("Invalid login or password")
+                        it.body("Invalid login or password")
                     }
                 }
             }

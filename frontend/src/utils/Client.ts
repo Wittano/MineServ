@@ -3,15 +3,17 @@ import Cookies from "js-cookie";
 import redirect from "./Redirect";
 import { createToken } from "./Token";
 
+const URL: string = "http://localhost:8080/api";
+
 export const client = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: URL,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
 export const authClient = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: URL,
   headers: {
     "Content-Type": "application/json",
     Authorization: `Bearer ${Cookies.get("jwt_token")}`,
