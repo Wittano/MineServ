@@ -14,7 +14,7 @@ class InsertLinks(
     private val repo: VersionRepository,
     private val createLinks: CreateLinks
 ) {
-    private val logger = LoggerFactory.getLogger(InsertLinks::class.simpleName)
+    private val logger = LoggerFactory.getLogger(InsertLinks::class.qualifiedName)
 
     /**
      * Save links to database
@@ -22,14 +22,17 @@ class InsertLinks(
     @Scheduled(fixedRate = 86400000)
     fun insert() {
         try {
-            val list = repo.findAll()
-            val filteredList = createLinks.create().filter {
-                !list.contains(it)
+            repo.findAll().also { list ->
+                createLinks.create().filter {
+                    !list.contains(it)
+                }.also {
+                    if (it.isNotEmpty()) {
+                        repo.saveAll(it)
+                    }
+                }
             }
 
-            if (filteredList.isNotEmpty()) {
-                repo.saveAll(filteredList)
-            }
+            logger.info("Updated links database")
         } catch (e: Exception) {
             logger.warn(e.message)
         }

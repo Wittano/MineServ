@@ -11,7 +11,7 @@ class ServerValidator(
     private val serverRepo: ServerRepository
 ) : Validator<Server> {
     override fun validate(value: Server) {
-        if (serverRepo.existsServerByName(value.name) == true) {
+        if (serverRepo.existsByName(value.name) == true) {
             throw ValidationException("Server ${value.name} is exist!")
         }
     }

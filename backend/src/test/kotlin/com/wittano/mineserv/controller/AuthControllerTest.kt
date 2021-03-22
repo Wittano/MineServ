@@ -3,6 +3,8 @@ package com.wittano.mineserv.controller
 import com.wittano.mineserv.components.utils.JwtUtil
 import com.wittano.mineserv.data.User
 import com.wittano.mineserv.data.UserRequest
+import com.wittano.mineserv.data.response.Response
+import com.wittano.mineserv.utils.DataReader
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -29,11 +31,6 @@ internal class AuthControllerTest {
     private val testUser: UserRequest =
         UserRequest("wittano", "1234567890")
 
-    private data class UserResponse(
-        val id: Int?,
-        val username: String
-    )
-
     @Test
     fun register_ShouldReturnUserDataWithoutPassword() {
         val response = client
@@ -43,13 +40,17 @@ internal class AuthControllerTest {
             .body(BodyInserters.fromValue(testUser))
             .exchange()
             .expectStatus().isCreated
-            .expectBody(UserResponse::class.java)
+            .expectBody(Response::class.java)
             .returnResult()
 
-        assertNotNull(response)
-
         try {
-            assertEquals(response.responseBody!!.username, testUser.username)
+            assertNull(response.responseBody?.message)
+            assertNotNull(response.responseBody?.data)
+
+            val data = DataReader.getData<Map<String, String>>(response)
+
+            assertNull(data["password"])
+            assertEquals(data["username"], testUser.username)
         } catch (e: NullPointerException) {
             fail()
         }
@@ -62,24 +63,21 @@ internal class AuthControllerTest {
         ]
     )
     fun register_ShouldReturnBadRequestStatus(name: String) {
-        val res = client
+        client
             .post()
             .uri("/api/user")
             .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(UserRequest(name, testUser.password)))
             .exchange()
             .expectStatus().isBadRequest
-            .expectBody(String::class.java)
-            .returnResult()
-
-        assertEquals("Invalid login or password", res.responseBody)
+            .expectBody(Response::class.java)
     }
 
     @Test
     fun auth_ShouldReturnJwtToken() {
         client
             .post()
-            .uri("/user")
+            .uri("/api/user")
             .bodyValue(
                 User(
                     null,
@@ -89,17 +87,17 @@ internal class AuthControllerTest {
             )
             .exchange()
 
-        val response = client
+        val res = client
             .post()
             .uri("/api/auth")
             .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(testUser))
             .exchange()
             .expectStatus().isOk
-            .expectBody(String::class.java)
+            .expectBody(Response::class.java)
             .returnResult()
 
-        assertTrue(jwtUtil.isValid(response.responseBody!!))
+        assertTrue(jwtUtil.isValid(DataReader.getData<Map<String, String>>(res)["token"]!!))
     }
 
     @ParameterizedTest
@@ -121,16 +119,13 @@ internal class AuthControllerTest {
             )
             .exchange()
 
-        val res = client
+        client
             .post()
             .uri("/api/auth")
             .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(testUser))
             .exchange()
             .expectStatus().isBadRequest
-            .expectBody(String::class.java)
-            .returnResult()
-
-        assertEquals("Invalid Credentials", res.responseBody)
+            .expectBody(Response::class.java)
     }
 }

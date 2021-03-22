@@ -14,7 +14,6 @@ import kotlin.collections.HashMap
  */
 @Component
 class JwtUtil {
-
     @Value("\${jwt.expired}")
     private val expired: Int? = null
 
@@ -61,5 +60,4 @@ class JwtUtil {
         .setSubject(subject)
         .signWith(SignatureAlgorithm.HS256, secret)
         .compact()
-
 }

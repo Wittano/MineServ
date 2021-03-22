@@ -14,34 +14,26 @@ data class Version(
     val version: String,
     val link: String
 ) {
-    override fun equals(other: Any?): Boolean {
-        return if (other is Version) {
-            this.link == other.link && this.version == other.version
-        } else {
-            false
-        }
-    }
+    override fun equals(other: Any?): Boolean =
+        other is Version &&
+                this.link == other.link &&
+                this.version == other.version
 
-    operator fun compareTo(other: String): Int {
-        return compareValuesBy(this, other) {
-            return compere(this.version.split("."), other.split("."))
-        }
-    }
+    operator fun compareTo(other: String): Int =
+        compere(this.version.split("."), other.split("."))
 
-    private fun compere(origin: List<String>, other: List<String>, i: Int = 0): Int {
-        return when {
-            origin[i].toInt() > other[i].toInt() -> {
-                1
-            }
-            origin[i].toInt() < other[i].toInt() -> {
-                -1
-            }
-            i == 2 -> {
-                compareValues(origin[i], other[i])
-            }
-            else -> {
-                compere(origin, other, i + 1)
-            }
+    private fun compere(origin: List<String>, other: List<String>, i: Int = 0): Int = when {
+        origin[i].toInt() > other[i].toInt() -> {
+            1
+        }
+        origin[i].toInt() < other[i].toInt() -> {
+            -1
+        }
+        i == 2 -> {
+            compareValues(origin[i], other[i])
+        }
+        else -> {
+            compere(origin, other, i + 1)
         }
     }
 }

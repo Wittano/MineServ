@@ -21,22 +21,20 @@ class ServerManager(
 
     @Value("\${project.download.dir}")
     private lateinit var downloadDir: String
-
     private val logger = LoggerFactory.getLogger(ServerManager::class.qualifiedName)
 
     /**
      * Get path to JRE binary
      */
-    private fun getJRE(): String {
+    private fun getJRE(): String =
         // Check if OS is Windows
-        return if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
+        if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
             System.getProperty("java.home") + "/bin/java.exe"
         } else {
             System.getProperty("java.home") + "/bin/java"
         }
-    }
 
-    fun create(server: Server) {
+    fun create(server: Server): Server {
         downloader.download(server.name, server.version.version)
 
         val process = ProcessBuilder(
@@ -64,7 +62,7 @@ class ServerManager(
 
         properties.default(server.name)
 
-        repo.save(server)
+        return repo.save(server)
     }
 
     @Throws(IllegalOperationException::class)
@@ -88,6 +86,9 @@ class ServerManager(
         repo.save(server)
     }
 
+    /**
+     * Stop server without saving words
+     */
     fun stop(server: Server) {
         ProcessHandle.of(server.pid!!).ifPresent {
             it.destroy()
@@ -102,6 +103,9 @@ class ServerManager(
         }
     }
 
+    /**
+     * Remove server from database and storage
+     */
     fun delete(server: Server) {
         FileSystemUtils.deleteRecursively(Path.of("${downloadDir}/${server.name}"))
         repo.delete(server)

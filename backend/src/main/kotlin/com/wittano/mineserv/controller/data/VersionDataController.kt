@@ -12,8 +12,6 @@ import reactor.core.publisher.Flux
 class VersionDataController(
     private val repo: VersionRepository
 ) {
-
     @GetMapping("")
     fun getVersions(): Flux<Version> = Flux.fromIterable(repo.findAll())
-
 }

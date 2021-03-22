@@ -3,9 +3,11 @@ package com.wittano.mineserv.controller
 import com.wittano.mineserv.config.scheduling.InsertLinks
 import com.wittano.mineserv.data.Server
 import com.wittano.mineserv.data.User
+import com.wittano.mineserv.data.response.Response
 import com.wittano.mineserv.repository.ServerRepository
 import com.wittano.mineserv.repository.UserRepository
 import com.wittano.mineserv.repository.VersionRepository
+import com.wittano.mineserv.utils.DataReader
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
@@ -34,11 +36,9 @@ internal class ServerControllerTest {
 
     private val user = User(null, "testname", "1234567890asdf")
 
+
     fun createTestServer(name: String = "testServer"): Server {
-        try {
-            links.insert()
-        } catch (e: Exception) {
-        }
+        links.insert()
 
         val testUser = try {
             userRepo.findAll().toList()[0]
@@ -57,14 +57,16 @@ internal class ServerControllerTest {
         return try {
             serverRepo.findAll().toList()[0]
         } catch (e: IndexOutOfBoundsException) {
-            client
-                .post()
-                .uri("/api/server")
-                .body(BodyInserters.fromValue(testServer))
-                .exchange()
-                .expectStatus().isCreated
-                .expectBody(Server::class.java)
-                .returnResult().responseBody!!
+            DataReader.getData(
+                client
+                    .post()
+                    .uri("/api/server")
+                    .body(BodyInserters.fromValue(testServer))
+                    .exchange()
+                    .expectStatus().isCreated
+                    .expectBody(Response::class.java)
+                    .returnResult()
+            )
         }
     }
 
@@ -82,7 +84,6 @@ internal class ServerControllerTest {
             .uri("/api/server/${testServer.id}")
             .exchange()
             .expectStatus().isOk
-            .expectBody().isEmpty
     }
 
     @Test
@@ -99,18 +100,24 @@ internal class ServerControllerTest {
             .uri("/api/server/stop/${testServer.id}")
             .exchange()
             .expectStatus().isOk
-            .expectBody().isEmpty
     }
 
     @Test
     fun startStart() {
-        val testServer = createTestServer()
+        val testServer = createTestServer().takeIf {
+            it.id != null
+        }
+
+        val id: Long? = if (testServer != null) {
+            testServer.id
+        } else {
+            serverRepo.findAllByOwner(user)[0].id
+        }
 
         client
             .put()
-            .uri("/api/server/start/${testServer.id}")
+            .uri("/api/server/start/${id}")
             .exchange()
             .expectStatus().isOk
-            .expectBody().isEmpty
     }
 }

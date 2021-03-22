@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextImpl
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.toMono
 
 /**
  * Service for authorization user
@@ -18,8 +19,7 @@ class UserAuthService(
     private val authManager: ReactiveAuthenticationManager,
     private val jwtUtil: JwtUtil
 ) {
-    private val logger = LoggerFactory.getLogger(UserAuthService::class.simpleName)
-
+    private val logger = LoggerFactory.getLogger(UserAuthService::class.qualifiedName)
 
     /**
      * Authorize user
@@ -36,5 +36,5 @@ class UserAuthService(
             logger.error("${it.cause} ${it.message}")
         }.doOnSuccess {
             SecurityContextImpl(it)
-        }.then(Mono.just(jwtUtil.create(userRequest.username)))
+        }.then(jwtUtil.create(userRequest.username).toMono())
 }

@@ -6,6 +6,7 @@ import com.wittano.mineserv.repository.UserRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.toMono
 
 /**
  * Service for management user
@@ -16,7 +17,7 @@ class UserService(
     private val encoder: PasswordEncoder
 ) {
     fun save(userRequest: UserRequest): Mono<User> {
-        return Mono.just(userRequest).map {
+        return userRequest.toMono().map {
             repo.save(User(null, userRequest.username, encoder.encode(userRequest.password)))
         }
     }
