@@ -12,6 +12,9 @@ import java.nio.file.Path
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
+/**
+ * Component for manage minecraft server
+ */
 @Component
 class ServerManager(
     private val repo: ServerRepository,
@@ -34,6 +37,11 @@ class ServerManager(
             System.getProperty("java.home") + "/bin/java"
         }
 
+    /**
+     * Create minecraft server
+     * @param server data about server, which will be created
+     * @return Server data, which was saved in database
+     */
     fun create(server: Server): Server {
         downloader.download(server.name, server.version.version)
 
@@ -65,6 +73,12 @@ class ServerManager(
         return repo.save(server)
     }
 
+    /**
+     *  Run minecraft server
+     *  @param server Server, which will be run
+     *  @throws IllegalOperationException throws, if someone will tried run server, when he isn't owner.
+     *  Only owner can run server
+     */
     @Throws(IllegalOperationException::class)
     fun start(server: Server) {
         if (repo.findAllByOwner(server.owner).none {
@@ -88,6 +102,7 @@ class ServerManager(
 
     /**
      * Stop server without saving words
+     * @param server Server, which will be stopped
      */
     fun stop(server: Server) {
         ProcessHandle.of(server.pid!!).ifPresent {
@@ -105,6 +120,7 @@ class ServerManager(
 
     /**
      * Remove server from database and storage
+     * @param server Server, which will be deleted
      */
     fun delete(server: Server) {
         FileSystemUtils.deleteRecursively(Path.of("${downloadDir}/${server.name}"))

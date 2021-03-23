@@ -9,6 +9,9 @@ import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicReference
 
+/**
+ * Component, which creates collection of links to download vanilla minecraft server
+ */
 @Component
 class CreateLinks {
 

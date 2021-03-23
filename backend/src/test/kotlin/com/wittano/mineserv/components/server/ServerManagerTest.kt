@@ -1,6 +1,6 @@
 package com.wittano.mineserv.components.server
 
-import com.wittano.mineserv.config.scheduling.InsertLinks
+import com.wittano.mineserv.config.scheduling.UpdateLinks
 import com.wittano.mineserv.data.Server
 import com.wittano.mineserv.data.User
 import com.wittano.mineserv.repository.ServerRepository
@@ -18,7 +18,6 @@ import java.io.FileInputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
-import kotlin.math.abs
 
 @SpringBootTest
 internal class ServerManagerTest {
@@ -36,14 +35,14 @@ internal class ServerManagerTest {
     private lateinit var manager: ServerManager
 
     @Autowired
-    private lateinit var insertLinks: InsertLinks
+    private lateinit var updateLinks: UpdateLinks
 
     @Value("\${project.download.dir}")
     private lateinit var downloadDir: String
 
     @BeforeEach
     private fun addUser() {
-        insertLinks.insert()
+        updateLinks.update()
 
         try {
             userRepo.save(User(null, "test", "test12345"))

@@ -12,6 +12,9 @@ import java.nio.channels.Channels
 import java.nio.file.Files
 import java.nio.file.Path
 
+/**
+ * Component, which downloads minecraft server
+ */
 @Component
 class ServerDownloader(
     private val repo: VersionRepository
@@ -44,6 +47,7 @@ class ServerDownloader(
         }
 
         val file = name.let {
+            // Create empty file, which will be downloaded minecraft_server.jar
             if (it.isNotEmpty()) {
                 createFile("${path}/${it}/minecraft_server.${version}.jar")
             } else {
@@ -55,6 +59,7 @@ class ServerDownloader(
             return
         }
 
+        //Download minecraft_server.jar
         FileOutputStream(file).channel.transferFrom(
             Channels.newChannel(
                 URL(repo.findFirstByVersion(version)?.link).openStream()

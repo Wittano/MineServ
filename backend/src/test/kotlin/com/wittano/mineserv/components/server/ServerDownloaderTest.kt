@@ -1,7 +1,7 @@
 package com.wittano.mineserv.components.server
 
 import com.wittano.mineserv.components.exceptions.VersionException
-import com.wittano.mineserv.config.scheduling.InsertLinks
+import com.wittano.mineserv.config.scheduling.UpdateLinks
 import com.wittano.mineserv.repository.VersionRepository
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -21,7 +21,7 @@ internal class ServerDownloaderTest {
     private lateinit var downloader: ServerDownloader
 
     @Autowired
-    private lateinit var createLinks: InsertLinks
+    private lateinit var createLinks: UpdateLinks
 
     @Autowired
     private lateinit var repo: VersionRepository
@@ -29,7 +29,7 @@ internal class ServerDownloaderTest {
     @BeforeEach
     fun beforeEach() {
         try {
-            createLinks.insert()
+            createLinks.update()
         } catch (e: Exception) {
 
         }

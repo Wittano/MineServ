@@ -7,20 +7,20 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
 /**
- * Component for insert links to database
+ * Component for update links table
  */
 @Component
-class InsertLinks(
+class UpdateLinks(
     private val repo: VersionRepository,
     private val createLinks: CreateLinks
 ) {
-    private val logger = LoggerFactory.getLogger(InsertLinks::class.qualifiedName)
+    private val logger = LoggerFactory.getLogger(UpdateLinks::class.qualifiedName)
 
     /**
      * Save links to database
      */
     @Scheduled(fixedRate = 86400000)
-    fun insert() {
+    fun update() {
         try {
             repo.findAll().also { list ->
                 createLinks.create().filter {

@@ -1,6 +1,6 @@
 package com.wittano.mineserv.controller
 
-import com.wittano.mineserv.config.scheduling.InsertLinks
+import com.wittano.mineserv.config.scheduling.UpdateLinks
 import com.wittano.mineserv.data.Server
 import com.wittano.mineserv.data.User
 import com.wittano.mineserv.data.response.Response
@@ -23,7 +23,7 @@ internal class ServerControllerTest {
     private lateinit var client: WebTestClient
 
     @Autowired
-    private lateinit var links: InsertLinks
+    private lateinit var links: UpdateLinks
 
     @Autowired
     private lateinit var userRepo: UserRepository
@@ -38,7 +38,7 @@ internal class ServerControllerTest {
 
 
     fun createTestServer(name: String = "testServer"): Server {
-        links.insert()
+        links.update()
 
         val testUser = try {
             userRepo.findAll().toList()[0]

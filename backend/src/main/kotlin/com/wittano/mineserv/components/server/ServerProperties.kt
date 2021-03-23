@@ -9,12 +9,14 @@ import java.io.FileOutputStream
 import java.nio.file.Path
 import java.util.*
 
+/**
+ * Component for modification .properties files
+ */
 @Component
 class ServerProperties {
 
     @Value("\${project.download.dir}")
     private lateinit var downloadDir: String
-
 
     private fun getPath(dir: String, name: String): Path =
         Path.of("${downloadDir}/${dir}/${name}")
@@ -44,6 +46,7 @@ class ServerProperties {
 
     /**
      * Load default settings configuration for server
+     * @param name Server name
      */
     fun default(name: String) {
         enableEULA(name)

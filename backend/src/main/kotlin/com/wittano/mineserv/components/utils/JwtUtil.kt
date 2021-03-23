@@ -20,6 +20,13 @@ class JwtUtil {
     @Value("\${jwt.secret}")
     private val secret: String? = null
 
+    /**
+     * Get claims from token
+     * @param token JWT token
+     * @throws JwtException throw, when token isn't valid
+     * @return Claims object
+     * @see Claims
+     */
     @Throws(io.jsonwebtoken.JwtException::class)
     private fun getClaims(token: String): Claims = Jwts
         .parser()
