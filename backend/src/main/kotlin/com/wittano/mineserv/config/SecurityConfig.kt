@@ -43,6 +43,7 @@ class SecurityConfig(
         .csrf().disable()
         .authorizeExchange()
         .pathMatchers(HttpMethod.POST, "/api/auth", "/api/user").permitAll()
+        .pathMatchers(HttpMethod.OPTIONS, "/api/auth", "/api/user").permitAll()
         .anyExchange().authenticated().and()
         .authenticationManager(authManager).securityContextRepository(jwtServerContext)
         .formLogin().disable()

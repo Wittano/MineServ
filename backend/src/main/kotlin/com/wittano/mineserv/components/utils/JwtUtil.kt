@@ -17,7 +17,7 @@ class JwtUtil {
     @Value("\${jwt.expired}")
     private val expired: Int? = null
 
-    @Value("\${jwt.secret}")
+    @Value("\${project.jwt.secret}")
     private val secret: String? = null
 
     /**

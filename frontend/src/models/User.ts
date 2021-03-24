@@ -7,7 +7,7 @@ export default class User {
         this.password = passwd;
     }
 
-    public valid() {
+    public valid(): boolean {
         const nameRegex = new RegExp('^[\\w.@+-]{5,150}')
         const passwordRegex = new RegExp('^[\\w.@+-]{5,150}')
 
