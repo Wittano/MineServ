@@ -1,10 +1,12 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import FormProps from "../../interfaces/props/component/FormProps";
+import APIResponse from "../../interfaces/reponse/APIResponse";
 import User from "../../models/User";
 import { client, refresh } from "../../utils/Client";
 import Error from "../Error";
-import Input from "../Input";
+import { Input } from "../Input";
 
-export default function Form(props) {
+export default function Form<T>(props: FormProps<T>) {
   // Hooks
   const [name, setName] = useState("");
   const [passwd, setPassword] = useState("");
@@ -12,8 +14,11 @@ export default function Form(props) {
   const [msg, setMsg] = useState("");
 
   // Update functions
-  const nameInput = (e) => setName(e.target.value.trim());
-  const passwordInput = (e) => setPassword(e.target.value.trim());
+  const nameInput = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setName(e.target.value.trim());
+
+  const passwordInput = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setPassword(e.target.value.trim());
 
   const action = async () => {
     const user = new User(name, passwd);
@@ -24,7 +29,7 @@ export default function Form(props) {
       return;
     }
 
-    const res: any | null = await client
+    const res: APIResponse<T> = await client
       .post(props.action, user)
       .then((res) => {
         setError(false);
@@ -35,8 +40,6 @@ export default function Form(props) {
         await refresh();
         setError(true);
         setMsg("Incorrect username or password");
-
-        return null;
       });
 
     if (res) {

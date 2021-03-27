@@ -1,7 +1,7 @@
 import { isAuth } from "../utils/Auth";
 import Cookies from "js-cookie";
-import BaseLink from "../component/Link";
-import Button from "../component/Buttons";
+import { BaseLink } from "../component/Link";
+import { Button } from "../component/Buttons";
 
 const logout: () => void = () => {
   Cookies.remove("jwt_token");
@@ -9,13 +9,13 @@ const logout: () => void = () => {
   window.location.reload();
 };
 
-export default function HomePage() {
+export const HomePage: () => JSX.Element = () => {
   const adminLink = () => {
     if (isAuth()) {
       return (
         <div className="flex ml-16 space-x-8">
           <BaseLink to="/admin" text="Admin page" />
-          <Button click={logout} text="Logout" />
+          <Button disable={false} click={logout} text="Logout" />
         </div>
       );
     }
@@ -33,4 +33,4 @@ export default function HomePage() {
       </div>
     </div>
   );
-}
+};

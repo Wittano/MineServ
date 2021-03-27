@@ -1,35 +1,33 @@
-import Button from "../component/Buttons";
+import { Button } from "../component/Buttons";
 import { useEffect, useState } from "react";
-import CreateForm from "../component/forms/CreateForm";
+import { CreateForm } from "../component/forms/CreateForm";
 import { authClient, refresh } from "../utils/Client";
-import Server from "../component/Server";
-import BaseLink from "../component/Link";
+import { BaseLink } from "../component/Link";
+import { Server as ServerComponent } from "../component/Server"
+import Server from "../models/Server";
 
-export default function AdminPage() {
+export const AdminPage = () => {
   const [isForm, setIsForm] = useState(false);
-  const [server, setServers] = useState([]);
+  const [server, setServers] = useState(Array<Server>());
   const [wait, setWait] = useState(false);
   useEffect(() => {
     getServers();
   }, []);
 
-  const getServers = async () => {
-    const res = await authClient
-      .get("/server")
-      .then((res) => res.data)
-      .catch(async () => {
-        await refresh();
-      });
-    setServers(res);
-  };
+  const getServers = async () =>
+    setServers(
+      await authClient
+        .get("/server")
+        .then((res) => res.data)
+        .catch(async () => refresh())
+    );
 
-  const changeForm = () => {
+  const changeForm = () => 
     setIsForm(!isForm);
-  };
 
   let rigthCorner = () => {
     if (!isForm && !wait) {
-      return <Button text="Create Server" click={changeForm} />;
+      return <Button disable={true} text="Create Server" click={changeForm} />;
     } else if (isForm && !wait) {
       return (
         <CreateForm
@@ -53,18 +51,15 @@ export default function AdminPage() {
         {rigthCorner()}
       </div>
       <div className="bg-white shadow-md m-10 p-2">
-        {server.map((e) => {
-          return (
-            <ul className="border-b-1 border-solid border-gray-300">
-              <Server
-                key={e.id}
-                data={e}
-                updateServer={setServers}
-                servers={server}
-              />
-            </ul>
-          );
-        })}
+        {server.map((e) => (
+          <ul key={e.id} className="border-b-1 border-solid border-gray-300">
+            <ServerComponent
+              current={e}
+              updateServer={setServers}
+              servers={server}
+            />
+          </ul>
+        ))}
       </div>
     </div>
   );

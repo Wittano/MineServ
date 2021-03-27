@@ -1,12 +1,15 @@
 import { auth } from "../utils/Auth";
-import redirect from "../utils/Redirect";
+import { redirect } from "../utils/Redirect";
 import Form from "../component/forms/Form";
+import JwtResponse from "../interfaces/reponse/JwtResponse";
 
-export default function LoginPage() {
-  const success = (res: string[]) => {
-    auth(res);
-    redirect();
-  };
-
-  return <Form title="Login" successFunc={success} action="/auth" />;
-}
+export const LoginPage = () => (
+  <Form<JwtResponse>
+    title="Login"
+    successFunc={(response) => {
+      auth(response.data!!.token);
+      redirect();
+    }}
+    action="/auth"
+  />
+);

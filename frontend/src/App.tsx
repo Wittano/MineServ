@@ -1,14 +1,13 @@
-import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
-import HomePage from "./pages/HomePage";
-import AdminPage from "./pages/AdminPage";
+import { LoginPage } from "./pages/LoginPage";
+import { HomePage } from "./pages/HomePage";
+import { AdminPage } from "./pages/AdminPage";
 import { isAuth } from "./utils/Auth";
-import RegisterPage from "./pages/RegisterPage";
+import { RegisterPage } from "./pages/RegisterPage";
 import "./index.css";
-import ConfigPage from "./pages/ConfigPage";
+import { ConfigPage } from "./pages/ConfigPage";
 
-export default function App() {
+export const App = () => {
   const authRoute = () => {
     if (isAuth()) {
       return (
@@ -36,4 +35,4 @@ export default function App() {
       </Switch>
     </BrowserRouter>
   );
-}
+};

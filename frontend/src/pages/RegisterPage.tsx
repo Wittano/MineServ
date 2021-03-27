@@ -1,10 +1,10 @@
-import redirect from "../utils/Redirect";
+import { redirect } from "../utils/Redirect";
 import Form from "../component/forms/Form";
 
-export default function RegisterPage() {
-  const success = () => {
-    redirect("/login");
-  };
-
-  return <Form title="Register" action="/user" successFunc={success} />;
-}
+export const RegisterPage = () => (
+  <Form<any>
+    title="Register"
+    action="/user"
+    successFunc={() => redirect("/login")}
+  />
+);
