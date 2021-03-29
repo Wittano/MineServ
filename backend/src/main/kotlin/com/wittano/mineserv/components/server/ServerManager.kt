@@ -81,7 +81,7 @@ class ServerManager(
      */
     @Throws(IllegalOperationException::class)
     fun start(server: Server) {
-        if (repo.findAllByOwner(server.owner).none {
+        if (repo.findAllByOwnerName(server.owner.username).none {
                 it.name == server.name
             }) {
             throw IllegalOperationException("You can't run server, if you aren't owner")

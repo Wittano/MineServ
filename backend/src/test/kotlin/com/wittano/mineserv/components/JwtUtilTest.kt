@@ -2,7 +2,7 @@ package com.wittano.mineserv.components
 
 import com.wittano.mineserv.components.utils.JwtUtil
 import io.jsonwebtoken.JwtException
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
@@ -35,7 +35,7 @@ internal class JwtUtilTest {
         try {
             val t = jwtUtil!!.decode(token)
 
-            Assertions.assertNotNull(t)
+            assertNotNull(t)
         } catch (_: JwtException) {
         }
     }
@@ -58,22 +58,31 @@ internal class JwtUtilTest {
         ]
     )
     fun isValid_ShouldReturnFalse(token: String) {
-        Assertions.assertFalse(jwtUtil!!.isValid(token))
+        assertFalse(jwtUtil!!.isValid(token))
     }
 
 
     @Test
     fun isValid_ShouldReturnTrue() {
         val token = jwtUtil!!.create("Wittano")
-        Assertions.assertTrue(jwtUtil.isValid(token))
+        assertTrue(jwtUtil.isValid(token))
     }
 
     @Test
     fun create_ShouldReturnJwtStringToken() {
         val token: String = jwtUtil!!.create("bob")
 
-        Assertions.assertTrue(token.split(".").size == 3)
-        Assertions.assertEquals(jwtUtil.decode(token).subject, "bob")
-        Assertions.assertTrue(jwtUtil.isValid(token))
+        assertTrue(token.split(".").size == 3)
+        assertEquals(jwtUtil.decode(token).subject, "bob")
+        assertTrue(jwtUtil.isValid(token))
+    }
+
+    @Test
+    fun getClaims_ShouldReturnClaims() {
+        val token = jwtUtil!!.create("bob")
+        val claims = jwtUtil.decode(token)
+
+        assertNotNull(claims)
+        assertEquals("bob", claims.subject)
     }
 }

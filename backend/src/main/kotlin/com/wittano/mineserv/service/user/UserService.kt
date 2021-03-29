@@ -16,9 +16,8 @@ class UserService(
     private val repo: UserRepository,
     private val encoder: PasswordEncoder
 ) {
-    fun save(userRequest: UserRequest): Mono<User> {
-        return userRequest.toMono().map {
-            repo.save(User(null, userRequest.username, encoder.encode(userRequest.password)))
+    fun save(userRequest: UserRequest): Mono<User> =
+        userRequest.toMono().map {
+            repo.save(User(null, it.username, encoder.encode(it.password)))
         }
-    }
 }

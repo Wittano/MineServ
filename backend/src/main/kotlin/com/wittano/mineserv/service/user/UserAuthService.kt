@@ -2,11 +2,9 @@ package com.wittano.mineserv.service.user
 
 import com.wittano.mineserv.components.utils.JwtUtil
 import com.wittano.mineserv.data.UserRequest
-import org.slf4j.LoggerFactory
-import org.springframework.security.authentication.ReactiveAuthenticationManager
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.core.context.SecurityContextImpl
+import com.wittano.mineserv.repository.UserRepository
+import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
@@ -16,25 +14,21 @@ import reactor.kotlin.core.publisher.toMono
  */
 @Service
 class UserAuthService(
-    private val authManager: ReactiveAuthenticationManager,
-    private val jwtUtil: JwtUtil
+    private val jwtUtil: JwtUtil,
+    private val repo: UserRepository,
+    private val encoder: PasswordEncoder
 ) {
-    private val logger = LoggerFactory.getLogger(UserAuthService::class.qualifiedName)
 
     /**
      * Authorize user
      * @return JWT token
      */
     fun auth(userRequest: UserRequest): Mono<String> =
-        authManager.authenticate(
-            UsernamePasswordAuthenticationToken(
-                userRequest.username,
-                userRequest.password,
-                mutableListOf(SimpleGrantedAuthority("USER"))
-            )
-        ).doOnError {
-            logger.error("${it.cause} ${it.message}")
-        }.doOnSuccess {
-            SecurityContextImpl(it)
-        }.then(jwtUtil.create(userRequest.username).toMono())
+        userRequest.toMono().doOnNext {
+            if (!encoder.matches(it.password, repo.findByUsername(it.username)?.password)) {
+                throw BadCredentialsException("Invalid login or password")
+            }
+        }.flatMap {
+            jwtUtil.create(it.username).toMono()
+        }
 }

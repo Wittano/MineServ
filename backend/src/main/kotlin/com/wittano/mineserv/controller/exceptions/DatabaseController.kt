@@ -2,6 +2,7 @@ package com.wittano.mineserv.controller.exceptions
 
 import com.wittano.mineserv.components.utils.reponse.ResponseCreator.Companion.createResponse
 import com.wittano.mineserv.data.response.Response
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -27,4 +28,8 @@ class DatabaseController {
             createResponse(exception.message!!)
         }
     }
+
+    @ExceptionHandler(DataIntegrityViolationException::class)
+    fun uniqueExceptions(exception: DataIntegrityViolationException) =
+        createResponse<Nothing>("Data is exist")
 }

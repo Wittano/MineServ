@@ -3,7 +3,7 @@ package com.wittano.mineserv.components.utils
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.util.*
@@ -29,8 +29,9 @@ class JwtUtil {
      */
     @Throws(io.jsonwebtoken.JwtException::class)
     private fun getClaims(token: String): Claims = Jwts
-        .parser()
-        .setSigningKey(secret)
+        .parserBuilder()
+        .setSigningKey(Keys.hmacShaKeyFor(secret!!.toByteArray()))
+        .build()
         .parseClaimsJws(token)
         .body
 
@@ -65,6 +66,6 @@ class JwtUtil {
         .setExpiration(Date(System.currentTimeMillis() + (expired!! * 1000)))
         .setIssuedAt(Date())
         .setSubject(subject)
-        .signWith(SignatureAlgorithm.HS256, secret)
+        .signWith(Keys.hmacShaKeyFor(secret!!.toByteArray()))
         .compact()
 }

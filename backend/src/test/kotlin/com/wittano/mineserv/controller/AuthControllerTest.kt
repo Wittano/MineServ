@@ -4,6 +4,7 @@ import com.wittano.mineserv.components.utils.JwtUtil
 import com.wittano.mineserv.data.User
 import com.wittano.mineserv.data.UserRequest
 import com.wittano.mineserv.data.response.Response
+import com.wittano.mineserv.repository.UserRepository
 import com.wittano.mineserv.utils.DataReader
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -27,6 +28,9 @@ internal class AuthControllerTest {
 
     @SpyBean
     lateinit var jwtUtil: JwtUtil
+
+    @Autowired
+    lateinit var userRepo: UserRepository
 
     private val testUser: UserRequest =
         UserRequest("wittano", "1234567890")
@@ -75,17 +79,16 @@ internal class AuthControllerTest {
 
     @Test
     fun auth_ShouldReturnJwtToken() {
-        client
-            .post()
-            .uri("/api/user")
-            .bodyValue(
+        try {
+            userRepo.save(
                 User(
                     null,
                     testUser.username,
                     PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(testUser.password)
                 )
             )
-            .exchange()
+        } catch (e: Exception) {
+        }
 
         val res = client
             .post()
@@ -107,23 +110,25 @@ internal class AuthControllerTest {
         ]
     )
     fun auth_ShouldReturnErrorMessage(password: String) {
-        client
-            .post()
-            .uri("/api/user")
-            .bodyValue(
+        try {
+            userRepo.save(
                 User(
                     null,
                     testUser.username,
                     PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(testUser.password)
                 )
             )
-            .exchange()
+        } catch (e: Exception) {
+        }
+
+        val invalidUser: UserRequest = testUser
+        invalidUser.password = password
 
         client
             .post()
             .uri("/api/auth")
             .contentType(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromValue(testUser))
+            .body(BodyInserters.fromValue(invalidUser))
             .exchange()
             .expectStatus().isBadRequest
             .expectBody(Response::class.java)
