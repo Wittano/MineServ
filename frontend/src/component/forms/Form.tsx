@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import FormProps from "../../interfaces/props/component/FormProps";
 import APIResponse from "../../interfaces/reponse/APIResponse";
 import User from "../../models/User";
-import { client, refresh } from "../../utils/Client";
+import { client } from "../../utils/Client";
 import Error from "../Error";
 import { Input } from "../Input";
 
@@ -36,10 +36,9 @@ export default function Form<T>(props: FormProps<T>) {
 
         return res.data;
       })
-      .catch(async (_) => {
-        await refresh();
+      .catch(async (e) => {
         setError(true);
-        setMsg("Incorrect username or password");
+        setMsg(e.response.data.message.replace("Data", "User"));
       });
 
     if (res) {

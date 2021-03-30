@@ -1,6 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import { redirect } from "./Redirect";
+import { tokenName } from "./Token";
 
 const URL: string = "http://localhost:8080/api";
 
@@ -9,9 +10,6 @@ const URL: string = "http://localhost:8080/api";
  */
 export const client = axios.create({
   baseURL: URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 /**
@@ -20,8 +18,7 @@ export const client = axios.create({
 export const authClient = axios.create({
   baseURL: URL,
   headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${Cookies.get("jwt_token")}`,
+    Authorization: `Bearer ${Cookies.get(tokenName)}`,
   },
 });
 
@@ -29,7 +26,7 @@ export const authClient = axios.create({
  * Check if, JWT is exist. If he isn't exist, user will be redirected to login page
  */
 export const refresh = () => {
-  if (Cookies.get("jwt_token")) {
+  if (Cookies.get(tokenName)) {
     return;
   } else {
     redirect("/login");

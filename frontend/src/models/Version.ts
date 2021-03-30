@@ -1,4 +1,5 @@
 export default interface Version {
   id: number;
-  name: string;
+  version: string;
+  link: string;
 }

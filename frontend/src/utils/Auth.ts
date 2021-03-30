@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import { createToken } from "./Token";
+import { createToken, tokenName } from "./Token";
 
 const JwtRegex = new RegExp(
   "^[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$"
@@ -11,7 +11,7 @@ const JwtRegex = new RegExp(
  */
 export const isAuth: () => boolean = () => {
   const cookie: () => string = () => {
-    const it = Cookies.get("jwt_token");
+    const it = Cookies.get(tokenName);
 
     return typeof it === "string" ? it : "";
   };
@@ -21,11 +21,11 @@ export const isAuth: () => boolean = () => {
 
 /**
  * Save JWT token in Cookies in local storage
- * @param tokens JWT token, which will be got from API
+ * @param token JWT token, which will be got from API
  */
-export const auth = (tokens: string): void => {
+export const auth = (token: string): void => {
   let current = new Date();
   current.setHours(current.getHours() + 1);
 
-  createToken("jwt_token", tokens, current);
+  createToken(tokenName, token, current);
 };

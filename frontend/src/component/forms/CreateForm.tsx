@@ -6,11 +6,12 @@ import Error from "../Error";
 import CreateFormProps from "../../interfaces/props/component/CreateFormProps";
 import Version from "../../models/Version";
 import APIResponse from "../../interfaces/reponse/APIResponse";
+import Server from "../../models/Server";
 
 const getVersion = async () => {
-  const response: APIResponse<Array<Version>> = await authClient
-    .get("/server/version")
-    .then((res) => res.data);
+  const response: APIResponse<Array<Version>> = await authClient.get(
+    "/version"
+  );
 
   return response.data;
 };
@@ -18,8 +19,8 @@ const getVersion = async () => {
 export const CreateForm = (props: CreateFormProps) => {
   // Hooks
   const [serverName, setServerName] = useState("");
-  const [version, setVersion] = useState(Array<Version>());
-  const [select, setSelecte] = useState(version[0]);
+  const [version, setVersion] = useState<Array<Version>>(Array<Version>());
+  const [select, setSelecte] = useState<Version>(version[0]);
   const [error, setError] = useState("");
   useEffect(() => {
     const versions = async () => {
@@ -32,26 +33,24 @@ export const CreateForm = (props: CreateFormProps) => {
   const createServer = async () => {
     props.setWait(true);
 
-    const res = await authClient
-      .post("/server/create", {
+    await authClient
+      .post("/server", {
         name: serverName,
         version: !select ? version[0] : select,
       })
-      .catch(async (err) => {
-        await refresh();
+      .then((res) => {
+        setError("");
+
+        props.cancelClick();
+        props.updateServer([...props.servers, res.data]);
+      })
+      .catch((err) => {
+        setError(err.message);
+        refresh();
         return err;
       });
 
     props.setWait(false);
-
-    if (res.status === 200) {
-      setError("");
-      props.cancelClick();
-    } else {
-      setError(res.message);
-    }
-
-    props.updateServer([...props.servers, res.data]);
   };
 
   const showError = () => {
@@ -64,7 +63,9 @@ export const CreateForm = (props: CreateFormProps) => {
     setServerName(event.target.value.trim());
 
   const selectInput = (event: React.ChangeEvent<HTMLSelectElement>) =>
-    setSelecte(version.find((e: Version) => e.name === event.target.value)!!);
+    setSelecte(
+      version.find((e: Version) => e.version === event.target.value)!!
+    );
 
   const divClass = "flex space-x-4 items-center mr-10 ml-10";
   return (
@@ -77,7 +78,7 @@ export const CreateForm = (props: CreateFormProps) => {
             className="border bg-white rounded px-3 py-2 outline-none"
           >
             {version.map((element: Version) => (
-              <option>{element.name}</option>
+              <option key={element.id}>{element.version}</option>
             ))}
           </select>
           {showError()}

@@ -2,10 +2,10 @@ import { isAuth } from "../utils/Auth";
 import Cookies from "js-cookie";
 import { BaseLink } from "../component/Link";
 import { Button } from "../component/Buttons";
+import { tokenName } from "../utils/Token";
 
 const logout: () => void = () => {
-  Cookies.remove("jwt_token");
-  Cookies.remove("jwt_refresh");
+  Cookies.remove(tokenName);
   window.location.reload();
 };
 

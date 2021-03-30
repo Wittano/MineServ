@@ -48,7 +48,7 @@ class SecurityConfig(
             .csrf().disable()
             .authorizeExchange()
             .pathMatchers(HttpMethod.POST, "/api/auth", "/api/user").permitAll()
-            .pathMatchers(HttpMethod.OPTIONS, "/api/auth", "/api/user").permitAll()
+            .pathMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
             .anyExchange().authenticated().and()
             .addFilterAt(authenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
             .formLogin().disable()

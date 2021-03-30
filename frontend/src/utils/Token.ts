@@ -1,5 +1,7 @@
 import * as Cookies from "js-cookie";
 
+export const tokenName = "token";
+
 /**
  * Create JWT token as Cookie
  * @param name cookie name
@@ -18,5 +20,5 @@ export const createToken = (name: string, data: string, time: Date) => {
  * @param name JWT cookie name
  * @returns JWT token as string, or undefined, when cookie wasn't found
  */
-export const getToken = (name: string = "jwt_token"): string | undefined =>
+export const getToken = (name: string = tokenName): string | undefined =>
   Cookies.get(name);
