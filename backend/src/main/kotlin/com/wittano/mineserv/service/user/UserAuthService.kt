@@ -1,7 +1,7 @@
 package com.wittano.mineserv.service.user
 
 import com.wittano.mineserv.components.utils.JwtUtil
-import com.wittano.mineserv.data.UserRequest
+import com.wittano.mineserv.data.request.UserRequest
 import com.wittano.mineserv.repository.UserRepository
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.crypto.password.PasswordEncoder

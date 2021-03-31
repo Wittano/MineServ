@@ -10,7 +10,7 @@ data class User(
     @Id
     @GeneratedValue
     @JsonView(DefaultView.Companion.External::class)
-    val id: Int?,
+    val id: Long?,
     @JsonView(DefaultView.Companion.External::class)
     @Column(unique = true, nullable = false)
     val username: String,

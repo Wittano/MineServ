@@ -1,4 +1,4 @@
-package com.wittano.mineserv.data
+package com.wittano.mineserv.data.request
 
 data class UserRequest(
     val username: String,

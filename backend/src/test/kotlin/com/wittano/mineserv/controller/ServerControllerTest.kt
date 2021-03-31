@@ -3,11 +3,14 @@ package com.wittano.mineserv.controller
 import com.wittano.mineserv.config.scheduling.UpdateLinks
 import com.wittano.mineserv.data.Server
 import com.wittano.mineserv.data.User
+import com.wittano.mineserv.data.request.ServerRequest
 import com.wittano.mineserv.data.response.Response
 import com.wittano.mineserv.repository.ServerRepository
 import com.wittano.mineserv.repository.UserRepository
 import com.wittano.mineserv.repository.VersionRepository
 import com.wittano.mineserv.utils.DataReader
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
@@ -46,12 +49,10 @@ internal class ServerControllerTest {
             userRepo.save(user)
         }
 
-        val testServer = Server(
-            null,
+        val testServer = ServerRequest(
             name,
-            testUser,
-            versionRepo.findFirstByVersion("1.16.5")!!,
-            null
+            testUser.id!!,
+            versionRepo.findFirstByVersion("1.16.5")!!.id!!,
         )
 
         return try {
@@ -72,7 +73,10 @@ internal class ServerControllerTest {
 
     @Test
     fun createServer() {
-        createTestServer("server")
+        val result = createTestServer("server")
+
+        assertNotNull(result)
+        assertEquals(user.username, result.owner.username)
     }
 
     @Test

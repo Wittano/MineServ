@@ -2,7 +2,7 @@ package com.wittano.mineserv.controller
 
 import com.wittano.mineserv.components.utils.JwtUtil
 import com.wittano.mineserv.data.User
-import com.wittano.mineserv.data.UserRequest
+import com.wittano.mineserv.data.request.UserRequest
 import com.wittano.mineserv.data.response.Response
 import com.wittano.mineserv.repository.UserRepository
 import com.wittano.mineserv.utils.DataReader
@@ -37,6 +37,8 @@ internal class AuthControllerTest {
 
     @Test
     fun register_ShouldReturnUserDataWithoutPassword() {
+        userRepo.deleteAll()
+
         val response = client
             .post()
             .uri("/api/user")

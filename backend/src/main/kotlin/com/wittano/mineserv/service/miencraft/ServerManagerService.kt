@@ -22,9 +22,7 @@ class ServerManagerService(
         }
 
     override fun create(data: Server): Mono<Server> =
-        data.toMono().doOnNext {
-            manager.create(it)
-        }
+        manager.create(data).toMono()
 
     override fun delete(entity: Server): Mono<Server> =
         entity.toMono().doOnNext {

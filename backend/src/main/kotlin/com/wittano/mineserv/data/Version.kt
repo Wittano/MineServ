@@ -1,5 +1,7 @@
 package com.wittano.mineserv.data
 
+import com.fasterxml.jackson.annotation.JsonView
+import com.wittano.mineserv.data.views.DefaultView
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -9,9 +11,12 @@ import javax.persistence.Id
 data class Version(
     @Id
     @GeneratedValue
+    @JsonView(DefaultView.Companion.External::class)
     val id: Long?,
     @Column(unique = true)
+    @JsonView(DefaultView.Companion.External::class)
     val version: String,
+    @JsonView(DefaultView.Companion.External::class)
     val link: String
 ) {
     override fun equals(other: Any?): Boolean =

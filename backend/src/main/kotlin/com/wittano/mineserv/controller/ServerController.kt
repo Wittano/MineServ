@@ -3,8 +3,10 @@ package com.wittano.mineserv.controller
 import com.fasterxml.jackson.annotation.JsonView
 import com.wittano.mineserv.components.exceptions.ServerNotFoundException
 import com.wittano.mineserv.data.Server
+import com.wittano.mineserv.data.request.ServerRequest
 import com.wittano.mineserv.data.response.Response
 import com.wittano.mineserv.data.views.DefaultView
+import com.wittano.mineserv.interfaces.Mapper
 import com.wittano.mineserv.interfaces.service.ServerService
 import com.wittano.mineserv.repository.ServerRepository
 import org.springframework.batch.item.validator.Validator
@@ -18,7 +20,8 @@ import reactor.kotlin.core.publisher.toMono
 class ServerController(
     private val manager: ServerService,
     private val validator: Validator<Server>,
-    private val repo: ServerRepository
+    private val repo: ServerRepository,
+    private val mapper: Mapper<ServerRequest, Server>
 ) {
 
     private fun managerAction(id: Long, action: (Server) -> Mono<Server>): Mono<Response<Server>> =
@@ -31,9 +34,11 @@ class ServerController(
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     @JsonView(DefaultView.Companion.External::class)
-    fun create(@RequestBody server: Server): Mono<Response<Server>> =
-        validator.validate(server).toMono().flatMap {
-            manager.create(server)
+    fun create(@RequestBody server: ServerRequest): Mono<Response<Server>> =
+        mapper.map(server).toMono().doOnNext {
+            validator.validate(it)
+        }.doOnSuccess {
+            manager.create(it)
         }.map {
             Response(it)
         }

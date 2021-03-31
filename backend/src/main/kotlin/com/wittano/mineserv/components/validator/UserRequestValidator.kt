@@ -1,6 +1,6 @@
 package com.wittano.mineserv.components.validator
 
-import com.wittano.mineserv.data.UserRequest
+import com.wittano.mineserv.data.request.UserRequest
 import org.springframework.batch.item.validator.ValidationException
 import org.springframework.batch.item.validator.Validator
 import org.springframework.stereotype.Component

@@ -2,7 +2,7 @@ package com.wittano.mineserv.controller
 
 import com.fasterxml.jackson.annotation.JsonView
 import com.wittano.mineserv.data.User
-import com.wittano.mineserv.data.UserRequest
+import com.wittano.mineserv.data.request.UserRequest
 import com.wittano.mineserv.data.response.JwtResponse
 import com.wittano.mineserv.data.response.Response
 import com.wittano.mineserv.data.views.DefaultView
