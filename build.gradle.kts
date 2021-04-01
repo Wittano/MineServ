@@ -1,23 +1,18 @@
-tasks.register("cleanProject", Delete::class) {
-    description = "Clean project and every submodules"
-    group = "clean"
+val backendName = "api"
+val frontendName = "webClient"
 
-    dependsOn(":frontend:clean", ":backend:clean")
+tasks.register<Delete>("clean") {
+    description = "Clean project and every submodules"
+    group = "project"
+
+    dependsOn(":$frontendName:clean", ":$backendName:clean")
 
     delete("build")
 }
 
-tasks.register("buildProject", Copy::class) {
+tasks.register("build") {
     description = "Build project to single jar archive"
-    group = "build"
+    group = "project"
 
-    dependsOn(":backend:build")
-
-    val backendDir = project(":backend").projectDir.path
-
-    inputs.dir("${backendDir}/build/libs")
-    outputs.dir("build")
-
-    from("${backendDir}/build/libs")
-    into("build")
+    dependsOn(":$backendName:copyJar", "$frontendName:copy")
 }

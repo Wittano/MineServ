@@ -73,3 +73,10 @@ tasks.withType<Test> {
         this.includeEngines("junit-jupiter", "junit-vintage")
     }
 }
+
+tasks.register<Copy>("copyJar") {
+    dependsOn("build")
+
+    from("build/libs")
+    into("${project.rootDir.absolutePath}/build/${project.name}")
+}

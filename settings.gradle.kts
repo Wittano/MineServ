@@ -1,2 +1,2 @@
 rootProject.name = "mineserv"
-include("frontend", "backend")
+include("api", "webClient")
