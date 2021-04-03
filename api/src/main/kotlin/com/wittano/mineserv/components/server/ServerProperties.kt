@@ -23,15 +23,17 @@ class ServerProperties {
 
     /**
      * Load file as Property object
+     * @param dir Directory name. Usually is server name
+     * @param name Name file, which will be changed. Default is server.properties
      */
-    private fun load(dir: String, name: String) = Properties().also {
+    fun load(dir: String, name: String = ServerFiles.SETTINGS.file) = Properties().also {
         try {
             it.load(FileInputStream(getPath(dir, name).toFile()))
         } catch (e: FileNotFoundException) {
         }
     }
 
-    private fun defaultSettings(name: String) = load(name, ServerFiles.SETTINGS.file).let {
+    private fun defaultSettings(name: String) = load(name).let {
         it["server-ip"] = "127.0.0.1"
         save(name, ServerFiles.SETTINGS.file, it)
     }

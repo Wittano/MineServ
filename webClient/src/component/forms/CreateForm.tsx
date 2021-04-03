@@ -36,7 +36,7 @@ export const CreateForm = (props: CreateFormProps) => {
     await authClient
       .post("/server", {
         name: serverName,
-        version: !select ? version[0] : select,
+        version_id: select.id,
       })
       .then((res) => {
         setError("");

@@ -41,10 +41,7 @@ dependencies {
 
     //Web scrapper
     implementation(group = "org.jsoup", name = "jsoup", version = "1.13.1")
-
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
-    implementation("org.springframework.boot", "spring-boot-starter-thymeleaf", springVersion)
-//    implementation("io.jsonwebtoken", "jjwt", "0.9.1")
+    // JJWT-API
     implementation("io.jsonwebtoken:jjwt-api:0.11.2")
 
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
