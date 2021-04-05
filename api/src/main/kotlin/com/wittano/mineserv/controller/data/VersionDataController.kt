@@ -13,5 +13,5 @@ class VersionDataController(
     private val repo: VersionRepository
 ) {
     @GetMapping("")
-    fun getVersions(): Flux<Version> = Flux.fromIterable(repo.findAll()).sort()
+    fun getVersions(): Flux<Version> = Flux.fromIterable(repo.findAll())
 }

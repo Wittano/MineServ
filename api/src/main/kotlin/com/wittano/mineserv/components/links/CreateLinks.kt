@@ -1,7 +1,7 @@
 package com.wittano.mineserv.components.links
 
 import com.wittano.mineserv.data.Version
-import com.wittano.mineserv.enums.LinksRegex
+import com.wittano.mineserv.enums.GlobalRegex
 import com.wittano.mineserv.enums.MinecraftServerLinks
 import org.jsoup.Jsoup
 import org.springframework.stereotype.Component
@@ -61,7 +61,7 @@ class CreateLinks {
                 val version = it.getElementsByTag("strong").text()
                 val link = it.getElementsByTag("a").last().attr("href")
 
-                if (LinksRegex.VERSION.regex.matches(version) && LinksRegex.LINK.regex.matches(link)) {
+                if (GlobalRegex.VERSION.regex.matches(version) && GlobalRegex.LINK.regex.matches(link)) {
                     collect.get().add(
                         Version(
                             null,

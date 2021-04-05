@@ -38,7 +38,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-
     //Web scrapper
     implementation(group = "org.jsoup", name = "jsoup", version = "1.13.1")
     // JJWT-API
@@ -47,12 +46,14 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
     runtimeOnly("org.postgresql:postgresql")
+
     testRuntimeOnly("com.h2database:h2")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-params")
+    testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-api", version = "5.8.0-M1")
+    testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-params", version = "5.8.0-M1")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
-    testImplementation("org.springframework.batch:spring-batch-test:")
+    testImplementation("org.springframework.batch:spring-batch-test")
     testImplementation("org.springframework.security:spring-security-test")
 }
 

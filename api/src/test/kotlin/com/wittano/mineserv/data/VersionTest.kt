@@ -10,7 +10,7 @@ internal class VersionTest {
     @ParameterizedTest
     @ValueSource(
         strings = [
-            "1.12.2", "1.14.4", "1.2.3", "1.16.4"
+            "1.12.2", "1.14.4", "1.2.3", "1.16.4", "1.4", "1.14"
         ]
     )
     fun compareTo_ShouldReturnTrue(version: String) {

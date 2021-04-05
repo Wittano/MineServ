@@ -1,46 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { ServerStatus } from "../interfaces/enums/ServerStatus";
 import ServerProps from "../interfaces/props/component/ServerProps";
 import { authClient, refresh } from "../utils/Client";
 import { DoneButton, RefuseButton } from "./Buttons";
 import { BaseLink } from "./Link";
 
-// Return descriptive name of status
-const nameStatus = (status: number) => {
-  let x: string = "";
-
-  switch (status) {
-    case 1:
-      x = "Stopped";
-      break;
-    case 2:
-      x = "Starting";
-      break;
-    case 3:
-      x = "Running";
-      break;
-  }
-
-  return x;
-};
-
 export const Server = (props: ServerProps) => {
-  const [version, setVersion] = useState("");
   const [status, setStatus] = useState(props.current.status);
-
-  useEffect(() => {
-    const getVersion = async () => {
-      setVersion(
-        await authClient
-          .get(`/server/version/${props.current.version}`)
-          .then((res) => res.data[0].version)
-          .catch(async () => {
-            await refresh();
-          })
-      );
-    };
-
-    getVersion();
-  }, [props.current.version]);
 
   const info = (text: string, value: string) => {
     return (
@@ -52,46 +18,45 @@ export const Server = (props: ServerProps) => {
   };
 
   const del = async () => {
-    await authClient
-      .delete(`/server/delete/${props.current.id}`)
-      .catch(async () => {
-        await refresh();
-      });
+    await authClient.delete(`/server/${props.current.id}`).catch(refresh);
 
     props.updateServer(props.servers.filter((e) => e.id !== props.current.id));
   };
 
   const start = async () => {
-    setStatus(2);
-    await authClient.post(`/server/start/${props.current.id}`).catch(async (_) => {
-      await refresh();
-    });
-    setStatus(3);
+    await authClient.put(`/server/start/${props.current.id}`).catch(refresh);
+    setStatus(ServerStatus.RUNNING);
   };
 
   const stop = async () => {
-    await authClient.post(`/server/stop/${props.current.id}`).catch(async (_) => {
-      await refresh();
-    });
-    setStatus(1);
+    await authClient.put(`/server/stop/${props.current.id}`).catch(refresh);
+    setStatus(ServerStatus.STOP);
   };
 
   return (
     <div className="flex justify-between m-10 align-baseline">
       <div className="flex space-x-7">
         {info("Server name", props.current.name)}
-        {info("Version", version)}
-        {info("Status", nameStatus(status))}
+        {info("Version", props.current.version.version)}
+        {info("Status", props.current.status.toString().toLocaleLowerCase())}
       </div>
       <div className="flex space-x-4">
         <BaseLink to={"/server/" + props.current.id} text="Edit" />
         <RefuseButton disable={false} text="Delete" click={del} />
-        {status === 1 ? (
-          <DoneButton text="Start" click={start} disable={status !== 1} />
+        {status === ServerStatus.STOP ? (
+          <DoneButton
+            text="Start"
+            click={start}
+            disable={status !== ServerStatus.STOP}
+          />
         ) : (
-          <RefuseButton text="Stop" click={stop} disable={status !== 3} />
+          <RefuseButton
+            text="Stop"
+            click={stop}
+            disable={status !== ServerStatus.RUNNING}
+          />
         )}
       </div>
     </div>
   );
-}
+};

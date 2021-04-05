@@ -4,23 +4,25 @@ import { CreateForm } from "../component/forms/CreateForm";
 import { authClient, refresh } from "../utils/Client";
 import { BaseLink } from "../component/Link";
 import { Server as ServerComponent } from "../component/Server";
-import Server from "../models/Server";
+import Server from "../interfaces/Server";
 
 export const AdminPage = () => {
   const [isForm, setIsForm] = useState(false);
   const [server, setServers] = useState(Array<Server>());
   const [wait, setWait] = useState(false);
+
   useEffect(() => {
+    const getServers = async () => {
+      setServers(
+        await authClient
+          .get("/server")
+          .then((res) => res.data)
+          .catch(refresh)
+      );
+    };
+
     getServers();
   }, []);
-
-  const getServers = async () =>
-    setServers(
-      await authClient
-        .get("/server")
-        .then((res) => res.data.data)
-        .catch(async () => refresh())
-    );
 
   const changeForm = () => setIsForm(!isForm);
 
@@ -66,8 +68,8 @@ export const AdminPage = () => {
       <div className="flex justify-between items-center">
         <BaseLink to="/" text="Home" />
         {rigthCorner()}
-        {serverList()}
       </div>
+      {serverList()}
     </div>
   );
 };

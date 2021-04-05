@@ -1,5 +1,5 @@
 import React from "react";
-import Server from "../../../models/Server";
+import Server from "../../Server";
 
 export default interface ServerProps {
   current: Server;

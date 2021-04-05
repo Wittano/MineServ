@@ -1,6 +1,6 @@
 package com.wittano.mineserv.components.links
 
-import com.wittano.mineserv.enums.LinksRegex
+import com.wittano.mineserv.enums.GlobalRegex
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test
 internal class CreateLinksTest {
 
     private val searchLinks = CreateLinks()
-    private val versionRegex = LinksRegex.VERSION.regex
-    private val linkRegex = LinksRegex.LINK.regex
+    private val versionRegex = GlobalRegex.VERSION.regex
+    private val linkRegex = GlobalRegex.LINK.regex
 
     @Test
     fun loadAllVersion() {

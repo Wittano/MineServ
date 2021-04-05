@@ -4,9 +4,8 @@ import { DoneButton, RefuseButton } from "../Buttons";
 import { authClient, refresh } from "../../utils/Client";
 import Error from "../Error";
 import CreateFormProps from "../../interfaces/props/component/CreateFormProps";
-import Version from "../../models/Version";
+import Version from "../../interfaces/Version";
 import APIResponse from "../../interfaces/reponse/APIResponse";
-import Server from "../../models/Server";
 
 const getVersion = async () => {
   const response: APIResponse<Array<Version>> = await authClient.get(
@@ -36,13 +35,13 @@ export const CreateForm = (props: CreateFormProps) => {
     await authClient
       .post("/server", {
         name: serverName,
-        version_id: select.id,
+        version_id: select === undefined ? version[0].id : select.id,
       })
       .then((res) => {
         setError("");
 
         props.cancelClick();
-        props.updateServer([...props.servers, res.data]);
+        props.updateServer([...props.servers, res.data.data]);
       })
       .catch((err) => {
         setError(err.message);

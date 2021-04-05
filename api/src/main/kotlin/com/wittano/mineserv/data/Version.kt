@@ -34,7 +34,7 @@ data class Version(
         origin[i].toInt() < other[i].toInt() -> {
             -1
         }
-        i == 2 -> {
+        i == origin.size - 1 -> {
             compareValues(origin[i], other[i])
         }
         else -> {

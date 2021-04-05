@@ -1,6 +1,6 @@
 package com.wittano.mineserv.components.server
 
-import com.wittano.mineserv.enums.ServerFiles
+import com.wittano.mineserv.enums.server.ServerFiles
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.io.FileInputStream

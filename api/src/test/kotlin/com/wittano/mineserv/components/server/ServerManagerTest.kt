@@ -3,6 +3,7 @@ package com.wittano.mineserv.components.server
 import com.wittano.mineserv.config.scheduling.UpdateLinks
 import com.wittano.mineserv.data.Server
 import com.wittano.mineserv.data.User
+import com.wittano.mineserv.enums.server.ServerStatus
 import com.wittano.mineserv.repository.ServerRepository
 import com.wittano.mineserv.repository.UserRepository
 import com.wittano.mineserv.repository.VersionRepository
@@ -63,7 +64,8 @@ internal class ServerManagerTest {
             "testServer${version}",
             userRepo.findByUsername("test")!!,
             versionRepo.findFirstByVersion(version)!!,
-            null
+            null,
+            ServerStatus.STOP
         )
 
 
@@ -111,7 +113,8 @@ internal class ServerManagerTest {
             "testServer",
             userRepo.findByUsername("test")!!,
             versionRepo.findFirstByVersion("1.16.5")!!,
-            null
+            null,
+            ServerStatus.STOP
         )
 
         manager.create(server)
@@ -133,7 +136,8 @@ internal class ServerManagerTest {
             "testServer3",
             userRepo.findByUsername("test")!!,
             versionRepo.findFirstByVersion("1.16.5")!!,
-            null
+            null,
+            ServerStatus.STOP
         )
 
         manager.create(server)

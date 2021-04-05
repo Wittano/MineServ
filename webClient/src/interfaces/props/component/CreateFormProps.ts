@@ -1,5 +1,5 @@
 import React from "react";
-import Server from "../../../models/Server";
+import Server from "../../Server";
 
 export default interface CreateFormProps {
   setWait: React.Dispatch<React.SetStateAction<boolean>>;

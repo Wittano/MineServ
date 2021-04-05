@@ -1,3 +1,5 @@
+import { ServerStatus } from "./enums/ServerStatus";
+
 export default interface Server {
   id: number;
   name: string;
@@ -10,5 +12,5 @@ export default interface Server {
     id: number;
     name: string;
   };
-  status: number;
+  status: ServerStatus;
 }

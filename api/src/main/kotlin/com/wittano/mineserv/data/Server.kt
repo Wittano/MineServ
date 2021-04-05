@@ -2,6 +2,7 @@ package com.wittano.mineserv.data
 
 import com.fasterxml.jackson.annotation.JsonView
 import com.wittano.mineserv.data.views.DefaultView
+import com.wittano.mineserv.enums.server.ServerStatus
 import javax.persistence.*
 
 @Entity
@@ -23,4 +24,6 @@ data class Server(
     val version: Version,
     @JsonView(DefaultView.Companion.Internal::class)
     var pid: Long?,
+    @JsonView(DefaultView.Companion.External::class)
+    var status: ServerStatus
 )

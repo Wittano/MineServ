@@ -2,6 +2,7 @@ package com.wittano.mineserv.components.server
 
 import com.wittano.mineserv.components.exceptions.IllegalOperationException
 import com.wittano.mineserv.data.Server
+import com.wittano.mineserv.enums.server.ServerStatus
 import com.wittano.mineserv.repository.ServerRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -97,6 +98,8 @@ class ServerManager(
             .directory(Path.of("${downloadDir}/${server.name}").toFile())
             .start().pid()
 
+        server.status = ServerStatus.RUNNING
+
         repo.save(server)
     }
 
@@ -111,6 +114,8 @@ class ServerManager(
                 logger.info("Server ${server.name} was closed by ${server.owner.username}")
 
                 server.pid = null
+                server.status = ServerStatus.STOP
+
                 repo.save(server)
 
                 it
