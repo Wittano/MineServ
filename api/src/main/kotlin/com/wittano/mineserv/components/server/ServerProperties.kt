@@ -18,6 +18,11 @@ class ServerProperties {
     @Value("\${project.download.dir}")
     private lateinit var downloadDir: String
 
+    /**
+     * Get path to minecraft server directory
+     * @param dir Directory, which contain minecraft server
+     * @param name File name, which is located in dir
+     */
     private fun getPath(dir: String, name: String): Path =
         Path.of("${downloadDir}/${dir}/${name}")
 
@@ -43,7 +48,13 @@ class ServerProperties {
         save(name, ServerFiles.EULA.file, it)
     }
 
-    private fun save(dir: String, name: String, properties: Properties) =
+    /**
+     * Update properties file
+     * @param dir Directory name, which has the same name as server
+     * @param name Properties file, which will be updated. Default is server.properties
+     * @param properties Properties, which will be inserted to .properties file
+     */
+    fun save(dir: String, name: String = ServerFiles.SETTINGS.file, properties: Properties) =
         properties.store(FileOutputStream(getPath(dir, name).toFile()), "")
 
     /**

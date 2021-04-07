@@ -73,6 +73,7 @@ tasks.withType<Test> {
 }
 
 tasks.register<Copy>("copyJar") {
+    description = "Copy jar to general build directory"
     dependsOn("build")
 
     from("build/libs")
