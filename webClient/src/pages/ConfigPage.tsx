@@ -21,9 +21,12 @@ export const ConfigPage = (props: ConfigPageProps) => {
 
   useEffect(() => {
     const properties = async () => {
-      await authClient.get(`/properties/${id}`).then((res) => {
-        setProperties(res.data.data);
-      }).catch(refresh);
+      await authClient
+        .get(`/properties/${id}`)
+        .then((res) => {
+          setProperties(res.data.data);
+        })
+        .catch(refresh);
     };
 
     properties();
@@ -81,18 +84,23 @@ export const ConfigPage = (props: ConfigPageProps) => {
   };
 
   const updateClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    authClient.put(`/properties/${id}`, properties).then((res) => {
-      setResponse("Settings updated!");
-      setTimeout(() => {
-        setResponse("");
-      }, 2000);
-    }).catch(refresh);
+    authClient
+      .put(`/properties/${id}`, properties)
+      .then((res) => {
+        setResponse("Settings updated!");
+        setTimeout(() => {
+          setResponse("");
+        }, 2000);
+      })
+      .catch(refresh);
   };
 
   return (
     <div>
       <BaseLink text="Admin Page" to="/admin" />
-      <div className="grid grid-cols-4 gap-4 m-5 2xl:grid-cols-4 md:grid-cols-2 sm:grid-cols-1">{settings()}</div>
+      <div className="grid grid-cols-4 gap-4 m-5 2xl:grid-cols-4 md:grid-cols-2 sm:grid-cols-1">
+        {settings()}
+      </div>
       <div className="flex justify-center space-y-5">
         <DoneButton
           text="Update settings"

@@ -1,0 +1,47 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres:12.6
+    container_name: 'mineserv-postgres'
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: admin
+      POSTGRES_DB: docker
+    networks:
+      - backend
+  api:
+    container_name: 'mineserv-webflux'
+    build:
+      context: api
+      dockerfile: Dockerfile
+      args:
+        CORS_DOMAIN: http://localhost:3000 # Change IP for your machine!
+    ports:
+      - '8080:8080'
+    restart: on-failure
+    depends_on:
+      - db
+    networks:
+      - frontend
+      - backend
+  web-client:
+    container_name: 'mineserv-react'
+    build:
+      context: webClient
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: http://localhost:8080/api # Change IP for your machine!
+    ports:
+      - '3000:3000'
+    depends_on:
+      - api
+    networks:
+      - frontend
+    volumes:
+      - type: bind
+        source: /home/programmer/projects/java/MineServ/webClient
+        target: /app
+networks:
+  backend:
+  frontend:

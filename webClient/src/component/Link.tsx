@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import LinkProps from "../interfaces/props/component/LinkProps"
+import LinkProps from "../interfaces/props/component/LinkProps";
 
 export const BaseLink = (props: LinkProps) => {
   return (
@@ -10,4 +10,4 @@ export const BaseLink = (props: LinkProps) => {
       {props.text}
     </Link>
   );
-}
+};

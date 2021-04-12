@@ -7,7 +7,7 @@ const JwtRegex = new RegExp(
 
 /**
  * Check if user is logged in
- * @returns True, if JWT token exist and is vaild, otherwise False
+ * @returns True, if JWT token exist and is valid, otherwise False
  */
 export const isAuth: () => boolean = () => {
   const cookie: () => string = () => {

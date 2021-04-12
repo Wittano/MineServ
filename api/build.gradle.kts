@@ -18,10 +18,6 @@ repositories {
     mavenCentral()
 }
 
-tasks.jar {
-    this.archiveBaseName.set("mineserv")
-}
-
 dependencies {
     val springVersion = "2.4.3"
 

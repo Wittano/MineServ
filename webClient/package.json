@@ -29,6 +29,7 @@
   },
   "scripts": {
     "start": "craco start",
+    "docker": "REACT_APP_API_URL=${REACT_APP_API_URL} craco start",
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject"

@@ -9,10 +9,12 @@ export const tokenName = "token";
  * @param time time, which JWT cookie will be expired
  */
 export const createToken = (name: string, data: string, time: Date) => {
-  Cookies.set(name, data, {
-    secure: true,
-    expires: time,
-  });
+  // Cookies.set(name, data, {
+  //   secure: true,
+  //   expires: time,
+  //   domain: window.location.origin
+  // });
+  document.cookie = `${name}=${data};expires=${time}`;
 };
 
 /**
