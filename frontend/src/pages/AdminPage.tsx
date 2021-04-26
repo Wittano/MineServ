@@ -2,12 +2,13 @@ import Button from "../component/Buttons";
 import { useEffect, useState } from "react";
 import CreateForm from "../component/forms/CreateForm";
 import { authClient, refresh } from "../utils/Client";
-import Server from "../component/Server";
+import { Server as ServerComponent } from "../component/Server";
 import BaseLink from "../component/Link";
+import Server from "../interfaces/Server";
 
 export default function AdminPage() {
   const [isForm, setIsForm] = useState(false);
-  const [server, setServers] = useState([]);
+  const [server, setServers] = useState<Server[]>([]);
   const [wait, setWait] = useState(false);
   useEffect(() => {
     getServers();
@@ -56,9 +57,9 @@ export default function AdminPage() {
         {server.map((e) => {
           return (
             <ul className="border-b-1 border-solid border-gray-300">
-              <Server
+              <ServerComponent
                 key={e.id}
-                data={e}
+                current={e}
                 updateServer={setServers}
                 servers={server}
               />

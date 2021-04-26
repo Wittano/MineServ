@@ -6,7 +6,7 @@ import AdminPage from "./pages/AdminPage";
 import { isAuth } from "./utils/Auth";
 import RegisterPage from "./pages/RegisterPage";
 import "./index.css";
-import ConfigPage from "./pages/ConfigPage";
+import { ConfigPage } from "./pages/ConfigPage";
 
 export default function App() {
   const authRoute = () => {

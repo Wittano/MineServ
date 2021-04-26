@@ -31,10 +31,10 @@ jedi = "*"
 isort = "*"
 pylint = "*"
 mypy = "*"
-black = "*"
 pytest-asyncio = "*"
 pytest-django = "*"
 importlib-metadata = "*"
+autopep8 = "*"
 
 [requires]
 python_version = "3.9"

@@ -1,4 +1,6 @@
-export default function Input(props) {
+import InputProps from "../interfaces/props/component/InputProps";
+
+export default function Input(props: InputProps) {
   return (
     <div className="my-5 text-sm">
       <label htmlFor={props.name} className="block text-block">

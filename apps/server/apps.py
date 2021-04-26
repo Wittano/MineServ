@@ -2,9 +2,13 @@ from django.apps import AppConfig
 
 
 class ServerConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
     name = "apps.server"
 
     def ready(self):
         from .utils.link import SaveThreading
 
-        SaveThreading().start()
+        try:
+            SaveThreading().start()
+        except:
+            pass

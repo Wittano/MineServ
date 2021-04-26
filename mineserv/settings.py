@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # Apps
     "apps.server.apps.ServerConfig",
     "apps.user.apps.UserConfig",
+    "apps.properties",
 ]
 
 REST_FRAMEWORK = {

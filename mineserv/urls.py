@@ -17,5 +17,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('api/server/', include('apps.server.urls')),
+    path('api/properties/', include('apps.properties.urls')),
     path('api/', include('apps.user.urls'))
 ]

@@ -1,4 +1,6 @@
-function BaseButton(props, className: string): JSX.Element {
+import ButtonsProps from "../interfaces/props/component/ButtonsProps";
+
+function BaseButton(props: ButtonsProps, className: string): JSX.Element {
   return (
     <div>
       <button
@@ -12,7 +14,7 @@ function BaseButton(props, className: string): JSX.Element {
   );
 }
 
-export function DoneButton(props) {
+export function DoneButton(props: ButtonsProps) {
   return BaseButton(
     props,
     "inline-block px-6 py-2 text-xs" +
@@ -23,7 +25,7 @@ export function DoneButton(props) {
   );
 }
 
-export function RefuseButton(props) {
+export function RefuseButton(props: ButtonsProps) {
   return BaseButton(
     props,
     "inline-block px-6 py-2 text-xs" +
@@ -33,7 +35,7 @@ export function RefuseButton(props) {
   );
 }
 
-export default function Button(props) {
+export default function Button(props: ButtonsProps) {
   return BaseButton(
     props,
     "inline-block px-6 py-2 text-xs font-medium leading-6 text-center text-white" +

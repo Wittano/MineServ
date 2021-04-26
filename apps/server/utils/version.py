@@ -9,8 +9,8 @@ OFFICIAL = "https://www.minecraft.net/en-us/download/server"
 
 async def valid(version: str) -> bool:
     return (
-                   search(version) and await check_version(version)
-           ) or version.lower() == "latest"
+        search(version) and await check_version(version)
+    ) or version.lower() == "latest"
 
 
 async def check_latest() -> str:

@@ -1,25 +1,27 @@
 import Input from "../Input";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DoneButton, RefuseButton } from "../Buttons";
 import { authClient, refresh } from "../../utils/Client";
 import Error from "../Error";
+import CreateFormProps from "../../interfaces/props/component/CreateFormProps";
+import Version from "../../interfaces/Version";
 
 const getVersion = async () => {
-  const response: Array<any> = await authClient
+  const response: Array<Version> = await authClient
     .get("/server/version")
     .then((res) => res.data);
 
   return response.map((e) => e.version);
 };
 
-export default function CreateForm(props) {
+export default function CreateForm(props: CreateFormProps) {
   const versions = async () => {
     setVersion(await getVersion());
   };
 
   // Hooks
   const [serverName, setServerName] = useState("");
-  const [version, setVersion] = useState([]);
+  const [version, setVersion] = useState<string[]>([]);
   const [select, setSelecte] = useState(version[0]);
   const [error, setError] = useState("");
   useEffect(() => {
@@ -57,8 +59,8 @@ export default function CreateForm(props) {
     }
   };
 
-  const nameInput = (e) => setServerName(e.target.value.trim());
-  const selectInput = (e) => setSelecte(e.target.value);
+  const nameInput = (e: React.ChangeEvent<HTMLInputElement>) => setServerName(e.target.value.trim());
+  const selectInput = (e: React.ChangeEvent<HTMLSelectElement>) => setSelecte(e.target.value);
 
   const divClass = "flex space-x-4 items-center mr-10 ml-10";
   return (
